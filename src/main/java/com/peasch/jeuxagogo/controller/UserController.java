@@ -1,13 +1,11 @@
 package com.peasch.jeuxagogo.controller;
 
 import com.peasch.jeuxagogo.model.Dtos.User.UserDto;
-import com.peasch.jeuxagogo.repository.UserDao;
 import com.peasch.jeuxagogo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,14 +17,38 @@ public class UserController {
     UserService service;
 
 
-    @GetMapping("all")
+    @GetMapping("/all")
     public List<UserDto> getUsers() {
         return service.getUsers();
     }
 
-    @GetMapping("delete")
-    public void deleteUser(UserDto user){
-       service.deleteUser(user.getUsername());
+    @GetMapping("/delete")
+    public void deleteUser(UserDto user) {
+        service.deleteUser(user.getUsername());
+    }
+
+    @GetMapping("/{id}")
+    public UserDto findById(@PathVariable(name = "id") int id) {
+        return service.findById(id);
+    }
+
+    @GetMapping("/username/{username}")
+    public ResponseEntity findByUsername(@PathVariable(name = "username") String username) {
+        if (service.checkUsername(username)) {
+            return new ResponseEntity("ce nom d'utilisateur est déjà pris !", HttpStatus.FORBIDDEN);
+        }else {
+            return new ResponseEntity(service.findByUsername(username), HttpStatus.OK);
+        }
+    }
+
+    @PostMapping("/update")
+    public UserDto updateUser(UserDto userDto) {
+        return service.save(userDto);
+    }
+
+    @PostMapping("/add")
+    public UserDto addUser(@RequestBody UserDto user) {
+        return service.save(user);
     }
 
 }

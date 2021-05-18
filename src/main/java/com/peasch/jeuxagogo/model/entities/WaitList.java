@@ -27,4 +27,7 @@ public class WaitList {
 
     @Column(name = "return_date")
     private LocalDate returnDate;
+
+    @Column(name = "waitList_date")
+    private LocalDate date;
 }
