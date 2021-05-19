@@ -1,8 +1,6 @@
 language : java
 jdk: oraclejdk11
 install: true
-script:
-
-  - bash <(curl -s https://codecov.io/bash)
+script: mvn install
 before_install:
   - chmod +x mvnw
