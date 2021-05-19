@@ -4,5 +4,3 @@ jdk:
 
 sudo: false
 
-script:
-  -  mvn install -P test
