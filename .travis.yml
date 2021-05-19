@@ -1,6 +1,5 @@
 language : java
 jdk: oraclejdk11
 install: true
-script: mvn install
-before_install:
-  - chmod +x mvnw
+script: mvn clean install
+
