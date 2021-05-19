@@ -42,13 +42,19 @@ public class UserController {
     }
 
     @PostMapping("/update")
-    public UserDto updateUser(UserDto userDto) {
+    public UserDto updateUser(UserDto userDto) throws Exception {
         return service.save(userDto);
     }
 
     @PostMapping("/add")
-    public UserDto addUser(@RequestBody UserDto user) {
-        return service.save(user);
+    public ResponseEntity addUser(@RequestBody UserDto user)
+    {
+        try{
+            return new ResponseEntity(service.save(user),HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+
+        }
     }
 
 }

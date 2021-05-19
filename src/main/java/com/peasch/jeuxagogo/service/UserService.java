@@ -9,7 +9,7 @@ public interface UserService {
 
     List<UserDto> getUsers();
 
-    UserDto save(UserDto userDto);
+    UserDto save(UserDto userDto) throws Exception;
 
     void deleteUser(String userName);
 
@@ -18,4 +18,5 @@ public interface UserService {
     UserDto findByUsername(String username);
 
     boolean checkUsername(String username);
+    boolean checkEmail(String email);
 }
