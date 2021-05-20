@@ -1,30 +1,35 @@
 package com.peasch.jeuxagogo.service.impl;
 
-import com.googlecode.jmapper.JMapper;
 import com.peasch.jeuxagogo.model.Dtos.User.UserDto;
 import com.peasch.jeuxagogo.model.Mappers.UserMapper;
 import com.peasch.jeuxagogo.model.entities.User;
 import com.peasch.jeuxagogo.repository.UserDao;
 import com.peasch.jeuxagogo.service.UserService;
+import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
-import java.nio.file.FileAlreadyExistsException;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
 @Service
+@Log
 public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMapper mapper;
     @Autowired
     private UserDao dao;
+
+    Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
@@ -35,20 +40,13 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public UserDto save(UserDto userDto) throws Exception {
-        if (this.checkUsername(userDto.getUsername())){
-            throw new Exception("le nom d'utilisateur est déjà pris");
-
-        }
-        if (this.checkEmail(userDto.getEmail())){
-            throw  new Exception("cet email est déjà utilisé");
-        }
+        this.validationOfUser(userDto);
         return mapper.fromUserToDto(dao.save(mapper.fromDtoToUser(userDto)));
-
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void deleteUser(String userName) {
-        User user = dao.findUserByUsername(userName);
+    public void deleteUser(int id) {
+        User user = dao.findUserById(id);
         dao.delete(user);
     }
 
@@ -66,21 +64,39 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public UserDto findByEmail(String email) {
-        return mapper.fromUserToDto(dao.findUserByUsername(email));
+        return mapper.fromUserToDto(dao.findUserByEmail(email));
     }
 
     //------------------------------checking fields ------------------------
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
-    public boolean checkUsername(String username) {
-        UserDto user = this.findByUsername(username);
-        return (user != null);
-    }
-    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
-    public boolean checkEmail(String email) {
-        UserDto user =this.findByEmail(email);
-        return (user !=null);
+
+    private boolean checkUsername(String username) {
+        return this.findByUsername(username)!= null;
 
     }
 
+
+    private boolean checkEmail(String email) {
+        return this.findByEmail(email)!= null;
+
+    }
+
+    private void validationOfUser(UserDto user) throws Exception {
+        Set<ConstraintViolation<UserDto>> constraintViolations = validator.validate(user);
+        if (this.checkUsername(user.getUsername())) {
+            throw new Exception("le nom d'utilisateur est déjà pris");
+
+        }
+        if (this.checkEmail(user.getEmail())) {
+            throw new Exception("cet email est déjà utilisé");
+        }
+        if (!constraintViolations.isEmpty()) {
+            System.out.println("Impossible de valider les informations de l'utilisateur : ");
+            for (ConstraintViolation<UserDto> contraintes : constraintViolations) {
+                System.out.println(contraintes.getRootBeanClass().getSimpleName() +
+                        "." + contraintes.getPropertyPath() + " " + contraintes.getMessage());
+            }
+            throw new Exception("les informations sont incorrectes");
+        }
+    }
 }

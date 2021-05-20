@@ -11,12 +11,10 @@ public interface UserService {
 
     UserDto save(UserDto userDto) throws Exception;
 
-    void deleteUser(String userName);
+    void deleteUser(int id);
 
     UserDto findById(int id);
 
     UserDto findByUsername(String username);
 
-    boolean checkUsername(String username);
-    boolean checkEmail(String email);
 }

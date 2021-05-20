@@ -1,31 +1,34 @@
 package com.peasch.jeuxagogo.model.Dtos.User;
 
 import com.googlecode.jmapper.annotations.JGlobalMap;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-@JGlobalMap
 @NoArgsConstructor @AllArgsConstructor
 @Getter @Setter
+@Builder
 public class UserDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private int id;
-
+    @NotNull
     private String name;
+    @NotNull
     private String firstname;
+    @NotNull @Email
     private String email;
+    @NotNull
     private String username;
+    @NotNull
     private String password;
+    @Past @NotNull
     private LocalDate birthDate;
+
     private LocalDate adhesionDate;
 }

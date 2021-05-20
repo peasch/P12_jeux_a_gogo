@@ -22,9 +22,9 @@ public class UserController {
         return service.getUsers();
     }
 
-    @GetMapping("/delete")
-    public void deleteUser(UserDto user) {
-        service.deleteUser(user.getUsername());
+    @GetMapping("/delete/{id}")
+    public void deleteUser(@PathVariable(name = "id") int id) {
+        service.deleteUser(id);
     }
 
     @GetMapping("/{id}")
@@ -34,11 +34,12 @@ public class UserController {
 
     @GetMapping("/username/{username}")
     public ResponseEntity findByUsername(@PathVariable(name = "username") String username) {
-        if (service.checkUsername(username)) {
-            return new ResponseEntity("ce nom d'utilisateur est déjà pris !", HttpStatus.FORBIDDEN);
-        }else {
-            return new ResponseEntity(service.findByUsername(username), HttpStatus.OK);
-        }
+      if (service.findByUsername(username)!=null) {
+          return new ResponseEntity(service.findByUsername(username), HttpStatus.OK);
+      }else{
+          return new ResponseEntity("cet utilisateur n'existe pas",HttpStatus.NOT_FOUND);
+      }
+
     }
 
     @PostMapping("/update")

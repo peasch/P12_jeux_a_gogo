@@ -9,6 +9,8 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 
 @Entity
 @Table(name="user")
@@ -18,18 +20,25 @@ public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @Column(name="name")
     private String name;
+
     @Column(name = "firstname")
     private String firstname;
+
     @Column(name = "email")
     private String email;
+
     @Column(name = "username")
     private String username;
+
     @Column(name = "password")
     private String password;
+
     @Column(name = "birthdate")
     private LocalDate birthDate;
+
     @Column(name = "adhesion_date")
     private LocalDate adhesionDate;
 
