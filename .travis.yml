@@ -4,13 +4,5 @@ services:
   - mysql
 sudo: false
 install: true
-script: mvn clean install
-
-before_install:
-  - mysql -e 'CREATE DATABASE jag_db;'
-env:
-  global:
-    - PORT = 3306
-    - DB_NAME=jag_db
-    - DB_USER=root
-    - DB_PASSWORD=ocpizza
+dist: xenial
+script: mvn verify
