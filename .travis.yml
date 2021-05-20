@@ -18,4 +18,5 @@ test:
   adapter: mysql2
   database: jag_db
   username: root
+  password : ocpizza
   encoding: utf8
