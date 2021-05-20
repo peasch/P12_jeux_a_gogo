@@ -2,6 +2,7 @@ language : java
 jdk: oraclejdk11
 services:
   - mysql
+sudo: false
 install: true
 script: mvn clean install
 
