@@ -1,5 +1,9 @@
 language : java
 jdk: oraclejdk11
+services:
+  - mysql
 install: true
 script: mvn clean install
 
+before_install:
+  - mysql -e 'CREATE DATABASE jag_db;'
