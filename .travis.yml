@@ -8,12 +8,9 @@ script: mvn clean install
 
 before_install:
   - mysql -e 'CREATE DATABASE jag_db;'
-  
-  - SET PASSWORD FOR root@'localhost' = PASSWORD('ocpizza');
-
-test:
-  adapter: mysql2
-  database: jag_db
-  username: root
-  password : ocpizza
-  encoding: utf8
+env:
+  global:
+    - PORT = 3306
+    - DB_NAME=jag_db
+    - DB_USER=root
+    - DB_PASSWORD=ocpizza
