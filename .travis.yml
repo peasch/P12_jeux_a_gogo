@@ -8,6 +8,7 @@ script: mvn clean install
 
 before_install:
   - mysql -e 'CREATE DATABASE jag_db;'
+      - mysql -u root --password="ocpizza" < test/travis.sql
 
 addons:
   apt:
