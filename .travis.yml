@@ -7,3 +7,15 @@ script: mvn clean install
 
 before_install:
   - mysql -e 'CREATE DATABASE jag_db;'
+
+addons:
+  apt:
+    sources:
+      - mysql-5.7-trusty
+    packages:
+      - mysql-server
+test:
+  adapter: mysql2
+  database: jag_db
+  username: root
+  encoding: utf8
