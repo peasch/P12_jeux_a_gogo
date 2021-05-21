@@ -2,6 +2,14 @@ language : java
 jdk: oraclejdk11
 services:
   - mysql
+
+test:
+  adapter: mysql2
+  database: historyboard
+  username: root
+  password : ocpizza
+  encoding: utf8
+  
 sudo: false
 install: true
 dist: xenial
