@@ -1,18 +1,15 @@
 language : java
-jdk: oraclejdk11
+jdk:
+  -openjdk8
+  -openjdk11
 services:
   - mysql
+sudo: false
 
 test:
-  adapter: mysql2
-  database: historyboard
-  username: root
-  password : ocpizza
-  encoding: utf8
-
-
-  # sgjgndkjg
-sudo: false
+  - username: root
+  - password: ocpizza
+  - mysql -e 'CREATE DATABASE jag_db;'
 install: true
 dist: xenial
 script: mvn verify
