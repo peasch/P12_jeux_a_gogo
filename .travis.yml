@@ -2,12 +2,22 @@ language : java
 jdk: openjdk11
 services:
   - mysql
-sudo: false
+addons:
+  apt:
+    sources:
+      - mysql-5.7-trusty
+    packages:
+      - mysql-server
 
+dist: trusty
+
+sudo: required
+
+before_script:
+  - mysql -e 'create database antvel;'
 test:
-  - username: root
-  - password: ocpizza
-  - mysql -e 'CREATE DATABASE jag_db;'
-install: true
-dist: xenial
-script: mvn verify
+  username: root
+  password: ocpizza
+
+
+script: mvn clean install
