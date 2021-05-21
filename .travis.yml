@@ -13,11 +13,3 @@ dist: trusty
 
 sudo: required
 
-before_script:
-  - mysql -e 'create database antvel;'
-test:
-  username: root
-  password: ocpizza
-
-
-script: mvn clean install
