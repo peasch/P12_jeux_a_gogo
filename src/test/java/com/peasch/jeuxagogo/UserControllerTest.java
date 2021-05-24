@@ -3,7 +3,7 @@ package com.peasch.jeuxagogo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.peasch.jeuxagogo.controller.JeuxagogoApplication;
-import com.peasch.jeuxagogo.model.Dtos.User.UserDto;
+import com.peasch.jeuxagogo.model.dtos.UserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +79,16 @@ class UserControllerTest {
 
         mockMvc.perform(get("/user/delete/" + jambon.getId())
                 .content(jambonToString).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+    }
+
+    @Test
+    void testUserMapperIgnore() throws Exception {
+    UserDto user =UserDto.builder().username("admin").build();
+    String jsonRequest = mapper.writeValueAsString(user);
+      MvcResult result =  mockMvc.perform(get("/user/username/admin").content(jsonRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk()).andReturn();
+      UserDto user2 = mapper.readValue(result.getResponse().getContentAsString(),UserDto.class);
+        System.out.println(user2.getGodfather());
     }
 
 }

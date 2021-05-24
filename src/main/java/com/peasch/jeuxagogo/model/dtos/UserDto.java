@@ -1,14 +1,15 @@
-package com.peasch.jeuxagogo.model.Dtos.User;
-
-import com.googlecode.jmapper.annotations.JGlobalMap;
+package com.peasch.jeuxagogo.model.dtos;
+import com.peasch.jeuxagogo.model.entities.Friendship;
+import com.peasch.jeuxagogo.model.entities.Role;
+import com.peasch.jeuxagogo.model.entities.User;
 import lombok.*;
-
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import java.io.Serializable;
 import java.time.LocalDate;
+
+import java.util.Set;
 
 @NoArgsConstructor @AllArgsConstructor
 @Getter @Setter
@@ -31,4 +32,9 @@ public class UserDto implements Serializable {
     private LocalDate birthDate;
 
     private LocalDate adhesionDate;
+    private Set<Role> roles;
+    private User godfather;
+    private Set<User> godsons;
+    private Set<Friendship> askedFriends;
+    private Set<Friendship> askerUsers;
 }

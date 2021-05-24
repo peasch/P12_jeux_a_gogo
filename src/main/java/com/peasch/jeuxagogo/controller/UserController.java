@@ -1,6 +1,6 @@
 package com.peasch.jeuxagogo.controller;
 
-import com.peasch.jeuxagogo.model.Dtos.User.UserDto;
+import com.peasch.jeuxagogo.model.dtos.UserDto;
 import com.peasch.jeuxagogo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,9 +12,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/user")
 public class UserController {
-
-    @Autowired
-    UserService service;
+@Autowired
+    private UserService service;
 
 
     @GetMapping("/all")

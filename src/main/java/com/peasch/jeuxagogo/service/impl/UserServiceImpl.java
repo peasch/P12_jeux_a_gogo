@@ -1,12 +1,11 @@
 package com.peasch.jeuxagogo.service.impl;
 
-import com.peasch.jeuxagogo.model.Dtos.User.UserDto;
+import com.peasch.jeuxagogo.model.dtos.UserDto;
 import com.peasch.jeuxagogo.model.Mappers.UserMapper;
 import com.peasch.jeuxagogo.model.entities.User;
 import com.peasch.jeuxagogo.repository.UserDao;
 import com.peasch.jeuxagogo.service.UserService;
 import lombok.extern.java.Log;
-import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -35,13 +34,13 @@ public class UserServiceImpl implements UserService {
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public List<UserDto> getUsers() {
         List<User> users = dao.findAll();
-        return users.stream().map(x -> mapper.fromUserToDto(x)).collect(Collectors.toList());
+        return users.stream().map(x -> mapper.fromUserToStrictDto(x)).collect(Collectors.toList());
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public UserDto save(UserDto userDto) throws Exception {
         this.validationOfUser(userDto);
-        return mapper.fromUserToDto(dao.save(mapper.fromDtoToUser(userDto)));
+        return mapper.fromUserToStrictDto(dao.save(mapper.fromDtoToUser(userDto)));
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -54,17 +53,17 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public UserDto findById(int id) {
-        return mapper.fromUserToDto(dao.findUserById(id));
+        return mapper.fromUserToStrictDto(dao.findUserById(id));
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public UserDto findByUsername(String username) {
-        return mapper.fromUserToDto(dao.findUserByUsername(username));
+        return mapper.fromUserToStrictDto(dao.findUserByUsername(username));
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public UserDto findByEmail(String email) {
-        return mapper.fromUserToDto(dao.findUserByEmail(email));
+        return mapper.fromUserToStrictDto(dao.findUserByEmail(email));
     }
 
     //------------------------------checking fields ------------------------

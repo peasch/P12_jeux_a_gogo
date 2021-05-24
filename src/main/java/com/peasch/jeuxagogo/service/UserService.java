@@ -1,6 +1,6 @@
 package com.peasch.jeuxagogo.service;
 
-import com.peasch.jeuxagogo.model.Dtos.User.UserDto;
+import com.peasch.jeuxagogo.model.dtos.UserDto;
 
 import java.util.List;
 

@@ -1,0 +1,28 @@
+package com.peasch.jeuxagogo.model.dtos;
+
+import com.peasch.jeuxagogo.model.entities.Copy;
+import com.peasch.jeuxagogo.model.entities.Editor;
+import com.peasch.jeuxagogo.model.entities.GameStyle;
+import lombok.*;
+
+import java.io.Serializable;
+import java.util.Set;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@Builder
+public class GameDto implements Serializable {
+
+    private int id;
+    private String name;
+    private int ageMin;
+    private int playersNumber;
+    private Boolean available;
+    private String rulesLink;
+    private Editor editorDto;
+    private GameStyle gameStyleDto;
+    private Set<Copy> copiesDto;
+
+}
