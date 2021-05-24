@@ -1,4 +1,9 @@
 language : java
-jdk: openjdk11
-services: mysql
+jdk: oraclejdk11
+services:
+  - mysql
 sudo: false
+
+install: true
+dist: xenial
+script: mvn verify

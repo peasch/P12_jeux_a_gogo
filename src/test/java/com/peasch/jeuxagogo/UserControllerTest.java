@@ -80,5 +80,5 @@ class UserControllerTest {
         mockMvc.perform(get("/user/delete/" + jambon.getId())
                 .content(jambonToString).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
     }
-//-----------------------------
+
 }
