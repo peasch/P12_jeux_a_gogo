@@ -1,4 +1,4 @@
 package com.peasch.jeuxagogo.model.dtos;
 
-public class CopyDto {
+public class CopiesDto {
 }

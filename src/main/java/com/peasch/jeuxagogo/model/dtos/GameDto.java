@@ -5,6 +5,7 @@ import com.peasch.jeuxagogo.model.entities.Editor;
 import com.peasch.jeuxagogo.model.entities.GameStyle;
 import lombok.*;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Set;
 
@@ -16,13 +17,21 @@ import java.util.Set;
 public class GameDto implements Serializable {
 
     private int id;
+    @NotNull
     private String name;
+    @NotNull
     private int ageMin;
-    private int playersNumber;
+
+    private int minPlayers;
+    private int maxPlayers;
     private Boolean available;
+
     private String rulesLink;
-    private Editor editorDto;
-    private GameStyle gameStyleDto;
-    private Set<Copy> copiesDto;
+    @NotNull
+    private EditorDto editorDto;
+    @NotNull
+    private GameStyleDto gameStyleDto;
+    @NotNull
+    private Set<CopiesDto> copiesDto;
 
 }

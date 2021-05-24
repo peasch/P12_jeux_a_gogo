@@ -21,8 +21,10 @@ public class Game {
     private String name;
     @Column(name="age_min")
     private int ageMin;
-    @Column(name = "players_number")
-    private int playersNumber;
+    @Column(name = "min_players")
+    private int minPlayers;
+    @Column(name = "max_players")
+    private int maxPlayers;
     @Column(name = "available")
     private Boolean available;
 
