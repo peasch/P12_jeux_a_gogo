@@ -32,9 +32,9 @@ public class UserDto implements Serializable {
     private LocalDate birthDate;
 
     private LocalDate adhesionDate;
-    private Set<Role> roles;
-    private User godfather;
-    private Set<User> godsons;
-    private Set<Friendship> askedFriends;
-    private Set<Friendship> askerUsers;
+    private Set<RoleDto> rolesDto;
+    private UserDto godfather;
+    private Set<UserDto> godsons;
+    private Set<FriendshipDto> askedFriends;
+    private Set<FriendshipDto> askerUsers;
 }

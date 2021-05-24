@@ -20,5 +20,4 @@ public interface GameMapper {
     @Mapping(target = "editorDto", source = "editor", qualifiedByName = "withoutGames")
     GameDto fromGameToStrictDto(Game game);
 
-
 }
