@@ -8,5 +8,7 @@ public interface EditorService {
 
     List<EditorDto> getEditors();
     EditorDto findById(int id);
-
+    EditorDto save(EditorDto editor);
+    EditorDto update(EditorDto editorToUpdate);
+    void delete(int id);
 }
