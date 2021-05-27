@@ -7,6 +7,7 @@ import com.peasch.jeuxagogo.repository.UserDao;
 import com.peasch.jeuxagogo.service.Text;
 import com.peasch.jeuxagogo.service.UserService;
 import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 
 
 @Service
-@Log
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -35,7 +36,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public List<UserDto> getUsers() {
-        return dao.findAll().stream().map(x -> mapper.fromUserToStrictDto(x))
+        return dao.findAll().stream().map(mapper::fromUserToStrictDto)
                 .collect(Collectors.toList());
     }
 
@@ -93,6 +94,7 @@ public class UserServiceImpl implements UserService {
         }
         if (!constraintViolations.isEmpty()) {
             System.out.println(Text.INVALID_USER);
+
             for (ConstraintViolation<UserDto> contraintes : constraintViolations) {
                 System.out.println(contraintes.getRootBeanClass().getSimpleName() +
                         "." + contraintes.getPropertyPath() + " " + contraintes.getMessage());

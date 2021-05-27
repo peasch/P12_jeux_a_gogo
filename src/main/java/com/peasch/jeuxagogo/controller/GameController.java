@@ -32,7 +32,7 @@ public class GameController {
         }
     }
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity updateGame(@RequestBody GameDto game)
     {
         try{
@@ -43,11 +43,11 @@ public class GameController {
         }
     }
 
-    @PostMapping("/delete")
-    public ResponseEntity deleteGame(@RequestBody GameDto game)
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity deleteGame(@PathVariable(name = "id")int id)
     {
         try{
-            service.delete(game);
+            service.delete(id);
             return new ResponseEntity( HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity(HttpStatus.FORBIDDEN);

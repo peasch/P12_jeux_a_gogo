@@ -6,6 +6,7 @@ import com.peasch.jeuxagogo.repository.GameDao;
 import com.peasch.jeuxagogo.service.GameService;
 import com.peasch.jeuxagogo.service.Text;
 import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -20,7 +21,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-@Log
+
 public class GameServiceImpl implements GameService {
 
     @Autowired
@@ -36,7 +37,7 @@ public class GameServiceImpl implements GameService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public List<GameDto> getGames() {
-        return dao.findAll().stream().map(x -> mapper.fromGameToStrictDto(x))
+        return dao.findAll().stream().map(mapper::fromGameToStrictDto)
                 .collect(Collectors.toList());
     }
 
@@ -64,8 +65,8 @@ public class GameServiceImpl implements GameService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void delete(GameDto gameToUpdateDto) {
-        dao.delete(mapper.fromDtoToGame(this.findById(gameToUpdateDto.getId())));
+    public void delete(int id) {
+        dao.delete(mapper.fromDtoToGame(this.findById(id)));
     }
 
     //--------------------------Game findings -----------------------------------------
@@ -90,6 +91,7 @@ public GameDto findById(int id){
     private void constraintValidation(Set<ConstraintViolation<GameDto>> constraintViolations) {
         if (!constraintViolations.isEmpty()) {
             System.out.println(Text.INVALID_GAME);
+
             for (ConstraintViolation<GameDto> contraintes : constraintViolations) {
                 System.out.println(contraintes.getRootBeanClass().getSimpleName() +
                         "." + contraintes.getPropertyPath() + " " + contraintes.getMessage());
@@ -103,7 +105,6 @@ public GameDto findById(int id){
 
         if (this.checkName(gameDto.getName())) {
             throw new ValidationException(Text.ALREADY_USED_GAME_NAME);
-
         }
         this.constraintValidation(constraintViolations);
     }

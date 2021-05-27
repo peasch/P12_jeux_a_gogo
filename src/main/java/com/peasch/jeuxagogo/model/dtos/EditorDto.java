@@ -19,7 +19,8 @@ public class EditorDto implements Serializable {
     private String name;
     @NotNull
     private String country;
-    private Set<GameDto> games = new HashSet<>();
+
+    private Set<GameDto> games;
 
     private String website;
 }

@@ -10,5 +10,5 @@ public interface GameService {
     List<GameDto> getGames();
     GameDto save (GameDto gameDto) throws ValidationException;
     GameDto update(GameDto gameToUpdateDto)throws ValidationException;
-    void delete(GameDto gameToUpdateDto);
+    void delete(int id);
 }
