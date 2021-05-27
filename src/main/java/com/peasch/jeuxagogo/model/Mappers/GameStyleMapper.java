@@ -1,7 +1,5 @@
 package com.peasch.jeuxagogo.model.Mappers;
-
 import com.peasch.jeuxagogo.model.dtos.GameStyleDto;
-import com.peasch.jeuxagogo.model.entities.Game;
 import com.peasch.jeuxagogo.model.entities.GameStyle;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

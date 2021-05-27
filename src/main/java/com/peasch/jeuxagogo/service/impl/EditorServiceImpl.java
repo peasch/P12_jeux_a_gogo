@@ -4,7 +4,7 @@ import com.peasch.jeuxagogo.model.Mappers.EditorMapper;
 import com.peasch.jeuxagogo.model.dtos.EditorDto;
 import com.peasch.jeuxagogo.repository.EditorDao;
 import com.peasch.jeuxagogo.service.EditorService;
-import com.peasch.jeuxagogo.service.Text;
+import com.peasch.jeuxagogo.service.misc.Text;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

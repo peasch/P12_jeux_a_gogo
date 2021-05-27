@@ -40,13 +40,13 @@ class UserControllerTest {
     }
 
     @Test
-    void testGetUsers() throws Exception {
+    void TEST_GET_USERS() throws Exception {
         mockMvc.perform(get("/user/all")).andExpect(status().isOk());
 
     }
 
     @Test
-    void testAddAndUpdateUser() throws Exception {
+    void TEST_ADD_AND_UPDATE_USER() throws Exception {
 
         List<UserDto> userList = Arrays.asList(
                 UserDto.builder().name("bon").firstname("jean").username("jambon")
@@ -82,7 +82,7 @@ class UserControllerTest {
     }
 
     @Test
-    void testUserMapperIgnore() throws Exception {
+    void TEST_USER_MAPPER_IGNORE() throws Exception {
     UserDto user =UserDto.builder().username("admin").build();
     String jsonRequest = mapper.writeValueAsString(user);
       MvcResult result =  mockMvc.perform(get("/user/username/admin").content(jsonRequest)

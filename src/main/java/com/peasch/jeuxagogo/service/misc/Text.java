@@ -1,4 +1,4 @@
-package com.peasch.jeuxagogo.service;
+package com.peasch.jeuxagogo.service.misc;
 
 public class Text {
 

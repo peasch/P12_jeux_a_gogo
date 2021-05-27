@@ -44,7 +44,7 @@ public class EditorControllerTest {
 
     @Test
     void ADD_MODIFY_AND_DELETE_EDITOR() throws Exception {
-        EditorDto editor = EditorDto.builder().name("Hasbro").build();
+        EditorDto editor = EditorDto.builder().name("Quinoa").build();
         mockMvc.perform(post("/editor/add").content(mapper.writeValueAsString(editor))
                 .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isForbidden());
         editor.setCountry("France");
