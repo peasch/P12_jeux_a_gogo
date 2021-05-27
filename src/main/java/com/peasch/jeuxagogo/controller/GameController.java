@@ -1,11 +1,12 @@
 package com.peasch.jeuxagogo.controller;
 
 import com.peasch.jeuxagogo.model.dtos.GameDto;
+import com.peasch.jeuxagogo.model.dtos.UserDto;
 import com.peasch.jeuxagogo.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,6 +19,40 @@ public class GameController {
     @GetMapping("/all")
     public List<GameDto> getGames() {
         return service.getGames();
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity addGame(@RequestBody GameDto game)
+    {
+        try{
+            return new ResponseEntity(service.save(game), HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+
+        }
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity updateGame(@RequestBody GameDto game)
+    {
+        try{
+            return new ResponseEntity(service.update(game), HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+
+        }
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity deleteGame(@RequestBody GameDto game)
+    {
+        try{
+            service.delete(game);
+            return new ResponseEntity( HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+
+        }
     }
 
 }

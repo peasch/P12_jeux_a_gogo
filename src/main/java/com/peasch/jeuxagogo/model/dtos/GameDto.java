@@ -27,11 +27,11 @@ public class GameDto implements Serializable {
     private Boolean available;
 
     private String rulesLink;
-    @NotNull
+
     private EditorDto editorDto;
-    @NotNull
+
     private GameStyleDto gameStyleDto;
-    @NotNull
+
     private Set<CopiesDto> copiesDto;
 
 }

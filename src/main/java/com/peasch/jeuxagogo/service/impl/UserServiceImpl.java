@@ -4,6 +4,7 @@ import com.peasch.jeuxagogo.model.dtos.UserDto;
 import com.peasch.jeuxagogo.model.Mappers.UserMapper;
 import com.peasch.jeuxagogo.model.entities.User;
 import com.peasch.jeuxagogo.repository.UserDao;
+import com.peasch.jeuxagogo.service.Text;
 import com.peasch.jeuxagogo.service.UserService;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
+import javax.validation.ValidationException;
 import javax.validation.Validator;
 import java.util.List;
 import java.util.Set;
@@ -33,8 +35,8 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public List<UserDto> getUsers() {
-        List<User> users = dao.findAll();
-        return users.stream().map(x -> mapper.fromUserToStrictDto(x)).collect(Collectors.toList());
+        return dao.findAll().stream().map(x -> mapper.fromUserToStrictDto(x))
+                .collect(Collectors.toList());
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -80,22 +82,22 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    private void validationOfUser(UserDto user) throws Exception {
+    private void validationOfUser(UserDto user) throws ValidationException {
         Set<ConstraintViolation<UserDto>> constraintViolations = validator.validate(user);
         if (this.checkUsername(user.getUsername())) {
-            throw new Exception("le nom d'utilisateur est déjà pris");
+            throw new ValidationException(Text.ALREADY_USED_USERNAME);
 
         }
         if (this.checkEmail(user.getEmail())) {
-            throw new Exception("cet email est déjà utilisé");
+            throw new ValidationException(Text.ALREADY_USED_EMAIL);
         }
         if (!constraintViolations.isEmpty()) {
-            System.out.println("Impossible de valider les informations de l'utilisateur : ");
+            System.out.println(Text.INVALID_USER);
             for (ConstraintViolation<UserDto> contraintes : constraintViolations) {
                 System.out.println(contraintes.getRootBeanClass().getSimpleName() +
                         "." + contraintes.getPropertyPath() + " " + contraintes.getMessage());
             }
-            throw new Exception("les informations sont incorrectes");
+            throw new ValidationException(Text.INCORRECT_INFORMATION);
         }
     }
 }
