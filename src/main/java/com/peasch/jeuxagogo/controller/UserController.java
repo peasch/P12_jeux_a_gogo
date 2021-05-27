@@ -12,7 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/user")
 public class UserController {
-@Autowired
+    @Autowired
     private UserService service;
 
 
@@ -33,11 +33,11 @@ public class UserController {
 
     @GetMapping("/username/{username}")
     public ResponseEntity findByUsername(@PathVariable(name = "username") String username) {
-      if (service.findByUsername(username)!=null) {
-          return new ResponseEntity(service.findByUsername(username), HttpStatus.OK);
-      }else{
-          return new ResponseEntity("cet utilisateur n'existe pas",HttpStatus.NOT_FOUND);
-      }
+        if (service.findByUsername(username) != null) {
+            return new ResponseEntity(service.findByUsername(username), HttpStatus.OK);
+        } else {
+            return new ResponseEntity("cet utilisateur n'existe pas", HttpStatus.NOT_FOUND);
+        }
 
     }
 
@@ -47,11 +47,10 @@ public class UserController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity addUser(@RequestBody UserDto user)
-    {
-        try{
-            return new ResponseEntity(service.save(user),HttpStatus.OK);
-        }catch (Exception e){
+    public ResponseEntity addUser(@RequestBody UserDto user) {
+        try {
+            return new ResponseEntity(service.save(user), HttpStatus.OK);
+        } catch (Exception e) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
 
         }
