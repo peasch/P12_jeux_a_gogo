@@ -10,6 +10,7 @@ import org.mapstruct.ReportingPolicy;
 public interface GameStyleMapper {
 
     GameStyle fromDtoToStyle(GameStyleDto gameStyleDto);
+
     @Named("withoutGames")
     @Mapping(target = "games", ignore = true)
     GameStyleDto fromStyletoDtoWithoutGames(GameStyle gameStyle);

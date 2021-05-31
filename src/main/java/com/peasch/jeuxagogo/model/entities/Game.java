@@ -32,7 +32,8 @@ public class Game implements Serializable {
     private Integer duration;
     @Column(name = "rules_link")
     private String rulesLink;
-
+    @Column(name = "French")
+    private Boolean French;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="fk_editor")
     private Editor editor;

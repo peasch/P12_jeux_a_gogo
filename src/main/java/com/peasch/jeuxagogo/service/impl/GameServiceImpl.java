@@ -49,7 +49,7 @@ public class GameServiceImpl implements GameService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public GameDto update(GameDto gameToUpdateDto) {
        GameDto game = this.findById(gameToUpdateDto.getId());
-        /*game.setMaxPlayers(gameToUpdateDto.getMaxPlayers());
+        game.setMaxPlayers(gameToUpdateDto.getMaxPlayers());
         game.setEditorDto(gameToUpdateDto.getEditorDto());
         game.setCopiesDto(gameToUpdateDto.getCopiesDto());
         game.setGameStyleDto(gameToUpdateDto.getGameStyleDto());
@@ -58,9 +58,9 @@ public class GameServiceImpl implements GameService {
         game.setAgeMin(gameToUpdateDto.getAgeMin());
         game.setMinPlayers(gameToUpdateDto.getMinPlayers());
         game.setRulesLink(gameToUpdateDto.getRulesLink());
-        this.validationOfUpdatingGame(game);*/
+        this.validationOfUpdatingGame(game);
 
-        return mapper.fromGameToStrictDto(dao.save(mapper.fromDtoToGame(gameToUpdateDto)));
+        return mapper.fromGameToStrictDto(dao.save(mapper.fromDtoToGame(game)));
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

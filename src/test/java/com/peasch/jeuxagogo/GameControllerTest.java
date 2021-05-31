@@ -70,7 +70,7 @@ public class GameControllerTest {
          mockMvc.perform(put("/game/update").content(mapper.writeValueAsString(gameToUpdate))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk()).andReturn();
 
-//        mockMvc.perform(delete("/game/delete/"+gameToUpdate.getId())).andExpect(status().isOk());
+        mockMvc.perform(delete("/game/delete/"+gameToUpdate.getId())).andExpect(status().isOk());
     }
 
 }
