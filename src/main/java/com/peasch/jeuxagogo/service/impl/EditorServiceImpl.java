@@ -4,7 +4,7 @@ import com.peasch.jeuxagogo.model.Mappers.EditorMapper;
 import com.peasch.jeuxagogo.model.dtos.EditorDto;
 import com.peasch.jeuxagogo.repository.EditorDao;
 import com.peasch.jeuxagogo.service.EditorService;
-import com.peasch.jeuxagogo.service.misc.Text;
+import com.peasch.jeuxagogo.service.misc.Text_FR;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -85,13 +85,13 @@ public class EditorServiceImpl implements EditorService {
     //-------------------------------------Validations------------------------------------
     private void constraintValidation(Set<ConstraintViolation<EditorDto>> constraintViolations) {
         if (!constraintViolations.isEmpty()) {
-            System.out.println(Text.INVALID_GAME);
+            System.out.println(Text_FR.INVALID_GAME);
 
             for (ConstraintViolation<EditorDto> contraintes : constraintViolations) {
                 System.out.println(contraintes.getRootBeanClass().getSimpleName() +
                         "." + contraintes.getPropertyPath() + " " + contraintes.getMessage());
             }
-            throw new ValidationException(Text.INCORRECT_INFORMATION);
+            throw new ValidationException(Text_FR.INCORRECT_INFORMATION);
         }
     }
 
@@ -99,7 +99,7 @@ public class EditorServiceImpl implements EditorService {
         Set<ConstraintViolation<EditorDto>> constraintViolations = validator.validate(editorDto);
 
         if (this.checkName(editorDto.getName())) {
-            throw new ValidationException(Text.ALREADY_USED_GAME_NAME);
+            throw new ValidationException(Text_FR.ALREADY_USED_GAME_NAME);
         }
         this.constraintValidation(constraintViolations);
     }

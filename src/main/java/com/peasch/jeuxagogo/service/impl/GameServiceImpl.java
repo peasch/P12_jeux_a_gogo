@@ -4,7 +4,7 @@ import com.peasch.jeuxagogo.model.Mappers.GameMapper;
 import com.peasch.jeuxagogo.model.dtos.GameDto;
 import com.peasch.jeuxagogo.repository.GameDao;
 import com.peasch.jeuxagogo.service.GameService;
-import com.peasch.jeuxagogo.service.misc.Text;
+import com.peasch.jeuxagogo.service.misc.Text_FR;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -49,7 +49,7 @@ public class GameServiceImpl implements GameService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public GameDto update(GameDto gameToUpdateDto) {
        GameDto game = this.findById(gameToUpdateDto.getId());
-        game.setMaxPlayers(gameToUpdateDto.getMaxPlayers());
+        /*game.setMaxPlayers(gameToUpdateDto.getMaxPlayers());
         game.setEditorDto(gameToUpdateDto.getEditorDto());
         game.setCopiesDto(gameToUpdateDto.getCopiesDto());
         game.setGameStyleDto(gameToUpdateDto.getGameStyleDto());
@@ -58,8 +58,9 @@ public class GameServiceImpl implements GameService {
         game.setAgeMin(gameToUpdateDto.getAgeMin());
         game.setMinPlayers(gameToUpdateDto.getMinPlayers());
         game.setRulesLink(gameToUpdateDto.getRulesLink());
-        this.validationOfUpdatingGame(game);
-        return mapper.fromGameToStrictDto(dao.save(mapper.fromDtoToGame(game)));
+        this.validationOfUpdatingGame(game);*/
+
+        return mapper.fromGameToStrictDto(dao.save(mapper.fromDtoToGame(gameToUpdateDto)));
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -88,13 +89,13 @@ public GameDto findById(int id){
     //--------------------------VALIDATIONS---------------------------------
     private void constraintValidation(Set<ConstraintViolation<GameDto>> constraintViolations) {
         if (!constraintViolations.isEmpty()) {
-            System.out.println(Text.INVALID_GAME);
+            System.out.println(Text_FR.INVALID_GAME);
 
             for (ConstraintViolation<GameDto> contraintes : constraintViolations) {
                 System.out.println(contraintes.getRootBeanClass().getSimpleName() +
                         "." + contraintes.getPropertyPath() + " " + contraintes.getMessage());
             }
-            throw new ValidationException(Text.INCORRECT_INFORMATION);
+            throw new ValidationException(Text_FR.INCORRECT_INFORMATION);
         }
     }
 
@@ -102,7 +103,7 @@ public GameDto findById(int id){
         Set<ConstraintViolation<GameDto>> constraintViolations = validator.validate(gameDto);
 
         if (this.checkName(gameDto.getName())) {
-            throw new ValidationException(Text.ALREADY_USED_GAME_NAME);
+            throw new ValidationException(Text_FR.ALREADY_USED_GAME_NAME);
         }
         this.constraintValidation(constraintViolations);
     }
