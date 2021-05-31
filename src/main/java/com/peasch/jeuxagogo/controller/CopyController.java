@@ -1,12 +1,12 @@
 package com.peasch.jeuxagogo.controller;
 
-import com.peasch.jeuxagogo.model.dtos.CopiesDto;
+import com.peasch.jeuxagogo.model.dtos.CopyDto;
+import com.peasch.jeuxagogo.model.dtos.GameDto;
 import com.peasch.jeuxagogo.service.CopyService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,12 +17,23 @@ public class CopyController {
     private CopyService service;
 
     @GetMapping("/all")
-    public List<CopiesDto> getAllCopies(){
+    public List<CopyDto> getAllCopies(){
         return service.getAll();
     }
 
     @GetMapping("/game/{id}")
-    public List<CopiesDto> getAllCopiesByGameId(@PathVariable(name = "id") int id){
+    public List<CopyDto> getAllCopiesByGameId(@PathVariable(name = "id") int id){
         return service.getCopiesByGameId(id);
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity addGame(@RequestBody CopyDto copyDto)
+    {
+        try{
+            return new ResponseEntity(service.save(copyDto), HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+
+        }
     }
 }

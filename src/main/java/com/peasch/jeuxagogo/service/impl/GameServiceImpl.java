@@ -3,8 +3,10 @@ package com.peasch.jeuxagogo.service.impl;
 import com.peasch.jeuxagogo.model.Mappers.GameMapper;
 import com.peasch.jeuxagogo.model.dtos.GameDto;
 import com.peasch.jeuxagogo.repository.GameDao;
+import com.peasch.jeuxagogo.service.CopyService;
 import com.peasch.jeuxagogo.service.GameService;
 import com.peasch.jeuxagogo.service.misc.Text_FR;
+import org.mortbay.log.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -28,6 +30,9 @@ public class GameServiceImpl implements GameService {
     @Autowired
     private GameDao dao;
 
+    @Autowired
+    private CopyService copyService;
+
 
     Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
@@ -39,10 +44,6 @@ public class GameServiceImpl implements GameService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
-    public GameDto getGameById(int id) {
-        return mapper.fromGameToStrictDto(dao.findById(id).get());
-    }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public GameDto save(GameDto gameDto) {
@@ -53,7 +54,7 @@ public class GameServiceImpl implements GameService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public GameDto update(GameDto gameToUpdateDto) {
-       GameDto game = this.findById(gameToUpdateDto.getId());
+        GameDto game = this.findById(gameToUpdateDto.getId());
         game.setMaxPlayers(gameToUpdateDto.getMaxPlayers());
         game.setEditorDto(gameToUpdateDto.getEditorDto());
         game.setCopiesDto(gameToUpdateDto.getCopiesDto());
@@ -70,6 +71,7 @@ public class GameServiceImpl implements GameService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void delete(int id) {
+        copyService.deleteAllByGameId(id);
         dao.delete(mapper.fromDtoToGame(this.findById(id)));
     }
 
@@ -81,7 +83,7 @@ public class GameServiceImpl implements GameService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
-public GameDto findById(int id){
+    public GameDto findById(int id) {
         return mapper.fromGameToStrictDto(dao.findById(id).get());
     }
 
@@ -94,10 +96,10 @@ public GameDto findById(int id){
     //--------------------------VALIDATIONS---------------------------------
     private void constraintValidation(Set<ConstraintViolation<GameDto>> constraintViolations) {
         if (!constraintViolations.isEmpty()) {
-            System.out.println(Text_FR.INVALID_GAME);
+            Log.info(Text_FR.INVALID_GAME);
 
             for (ConstraintViolation<GameDto> contraintes : constraintViolations) {
-                System.out.println(contraintes.getRootBeanClass().getSimpleName() +
+                Log.info(contraintes.getRootBeanClass().getSimpleName() +
                         "." + contraintes.getPropertyPath() + " " + contraintes.getMessage());
             }
             throw new ValidationException(Text_FR.INCORRECT_INFORMATION);
@@ -108,6 +110,7 @@ public GameDto findById(int id){
         Set<ConstraintViolation<GameDto>> constraintViolations = validator.validate(gameDto);
 
         if (this.checkName(gameDto.getName())) {
+            Log.info(Text_FR.ALREADY_USED_GAME_NAME);
             throw new ValidationException(Text_FR.ALREADY_USED_GAME_NAME);
         }
         this.constraintValidation(constraintViolations);

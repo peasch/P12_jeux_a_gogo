@@ -2,6 +2,7 @@ package com.peasch.jeuxagogo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.peasch.jeuxagogo.controller.JeuxagogoApplication;
+import com.peasch.jeuxagogo.model.dtos.CopyDto;
 import com.peasch.jeuxagogo.model.dtos.EditorDto;
 import com.peasch.jeuxagogo.model.dtos.GameDto;
 import lombok.extern.java.Log;
@@ -66,6 +67,10 @@ public class GameControllerTest {
         GameDto gameToUpdate = mapper.readValue(result.getResponse().getContentAsString(), GameDto.class);
 
         gameToUpdate.setMinPlayers(3);
+        CopyDto copy =CopyDto.builder().available(true).code("dfsgdfg").game(gameToUpdate).build();
+
+        mockMvc.perform(post("/copy/add").content(mapper.writeValueAsString(copy))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk());
 
          mockMvc.perform(put("/game/update").content(mapper.writeValueAsString(gameToUpdate))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk()).andReturn();

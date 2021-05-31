@@ -1,10 +1,12 @@
 package com.peasch.jeuxagogo.service;
 
-import com.peasch.jeuxagogo.model.dtos.CopiesDto;
+import com.peasch.jeuxagogo.model.dtos.CopyDto;
 import java.util.List;
 
 public interface CopyService {
 
-    List<CopiesDto> getAll ();
-    List<CopiesDto> getCopiesByGameId(int id);
+    List<CopyDto> getAll ();
+    List<CopyDto> getCopiesByGameId(int id);
+    CopyDto save(CopyDto copy);
+    void deleteAllByGameId(int id);
 }

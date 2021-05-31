@@ -29,6 +29,6 @@ public class GameDto implements Serializable {
 
     private GameStyleDto gameStyleDto;
 
-    private Set<CopiesDto> copiesDto;
+    private Set<CopyDto> copiesDto;
 
 }
