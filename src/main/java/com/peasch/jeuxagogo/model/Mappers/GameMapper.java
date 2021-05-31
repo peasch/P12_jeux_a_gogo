@@ -8,7 +8,7 @@ import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        uses = {EditorMapper.class, GameStyleMapper.class})
+        uses = {EditorMapper.class, GameStyleMapper.class, CopyMapper.class})
 
 public interface GameMapper {
 
@@ -20,8 +20,8 @@ public interface GameMapper {
 
 
     @Named("toStrictDto")
-    @Mapping(target = "gameStyleDto", source = "game.gameStyle", qualifiedByName = "withoutGames")
-    @Mapping(target = "copiesDto", ignore = true)
+    @Mapping(target = "gameStyleDto", source = "gameStyle", qualifiedByName = "withoutGames")
+    @Mapping(target = "copiesDto", source = "copies", qualifiedByName = "withoutGames")
     @Mapping(target = "editorDto", source = "editor", qualifiedByName = "withoutGames")
     GameDto fromGameToStrictDto(Game game);
 

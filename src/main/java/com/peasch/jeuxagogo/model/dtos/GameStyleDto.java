@@ -4,6 +4,7 @@ import com.peasch.jeuxagogo.model.entities.Game;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -11,7 +12,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Builder
-public class GameStyleDto {
+public class GameStyleDto implements Serializable {
 
     private int id;
     @NotNull

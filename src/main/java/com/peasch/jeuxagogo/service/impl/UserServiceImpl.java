@@ -4,9 +4,8 @@ import com.peasch.jeuxagogo.model.dtos.UserDto;
 import com.peasch.jeuxagogo.model.Mappers.UserMapper;
 import com.peasch.jeuxagogo.model.entities.User;
 import com.peasch.jeuxagogo.repository.UserDao;
-import com.peasch.jeuxagogo.service.Text;
+import com.peasch.jeuxagogo.service.misc.Text_FR;
 import com.peasch.jeuxagogo.service.UserService;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -86,20 +85,20 @@ public class UserServiceImpl implements UserService {
     private void validationOfUser(UserDto user) throws ValidationException {
         Set<ConstraintViolation<UserDto>> constraintViolations = validator.validate(user);
         if (this.checkUsername(user.getUsername())) {
-            throw new ValidationException(Text.ALREADY_USED_USERNAME);
+            throw new ValidationException(Text_FR.ALREADY_USED_USERNAME);
 
         }
         if (this.checkEmail(user.getEmail())) {
-            throw new ValidationException(Text.ALREADY_USED_EMAIL);
+            throw new ValidationException(Text_FR.ALREADY_USED_EMAIL);
         }
         if (!constraintViolations.isEmpty()) {
-            System.out.println(Text.INVALID_USER);
+            System.out.println(Text_FR.INVALID_USER);
 
             for (ConstraintViolation<UserDto> contraintes : constraintViolations) {
                 System.out.println(contraintes.getRootBeanClass().getSimpleName() +
                         "." + contraintes.getPropertyPath() + " " + contraintes.getMessage());
             }
-            throw new ValidationException(Text.INCORRECT_INFORMATION);
+            throw new ValidationException(Text_FR.INCORRECT_INFORMATION);
         }
     }
 }

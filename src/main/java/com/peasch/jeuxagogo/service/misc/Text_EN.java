@@ -1,6 +1,6 @@
-package com.peasch.jeuxagogo.service;
+package com.peasch.jeuxagogo.service.misc;
 
-public class Text {
+public class Text_EN {
 
     public static final String ALREADY_USED_EMAIL="Cet email est déjà utilisé";
     public static final String ALREADY_USED_USERNAME="Ce pseudo est déjà utilisé";

@@ -38,13 +38,13 @@ public class GameControllerTest {
     }
 
     @Test
-    void testGetGames() throws Exception {
+    void TESTGETGAMES() throws Exception {
         mockMvc.perform(get("/game/all")).andExpect(status().isOk());
 
     }
 
     @Test
-    void incompleteGameAdding() throws Exception {
+    void INCOMPLETE_GAME_ADDING() throws Exception {
         GameDto game = GameDto.builder().name("bataille navale").available(true).build();
         log.info(mapper.writeValueAsString(game));
         String jsonRequest = mapper.writeValueAsString(game);
@@ -67,13 +67,10 @@ public class GameControllerTest {
 
         gameToUpdate.setMinPlayers(3);
 
-        result = mockMvc.perform(put("/game/update").content(mapper.writeValueAsString(gameToUpdate))
+         mockMvc.perform(put("/game/update").content(mapper.writeValueAsString(gameToUpdate))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk()).andReturn();
 
-        System.out.println(mapper.readValue(result.getResponse().getContentAsString(), GameDto.class));
-
-        /*mockMvc.perform(delete("/game/delete/"+gameToUpdate.getId()).content(mapper.writeValueAsString(gameToUpdate))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk());*/
+        mockMvc.perform(delete("/game/delete/"+gameToUpdate.getId())).andExpect(status().isOk());
     }
 
 }

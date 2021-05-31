@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,7 +14,7 @@ import java.util.Set;
 @Table(name="game")
 @AllArgsConstructor @NoArgsConstructor
 @Getter @Setter
-public class Game {
+public class Game implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -27,10 +28,12 @@ public class Game {
     private int maxPlayers;
     @Column(name = "available")
     private Boolean available;
-
+    @Column(name = "duration")
+    private Integer duration;
     @Column(name = "rules_link")
     private String rulesLink;
-
+    @Column(name = "French")
+    private Boolean French;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="fk_editor")
     private Editor editor;
