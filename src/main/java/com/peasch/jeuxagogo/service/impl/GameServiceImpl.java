@@ -39,6 +39,11 @@ public class GameServiceImpl implements GameService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+    public GameDto getGameById(int id) {
+        return mapper.fromGameToStrictDto(dao.findById(id).get());
+    }
+
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public GameDto save(GameDto gameDto) {
         this.validationOfNewGame(gameDto);

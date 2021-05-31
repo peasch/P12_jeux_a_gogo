@@ -71,6 +71,16 @@ public class GameControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk()).andReturn();
 
         mockMvc.perform(delete("/game/delete/"+gameToUpdate.getId())).andExpect(status().isOk());
+
+    }
+
+    @Test
+    void SHOW_FIELDS_OF_GAME() throws Exception{
+        MvcResult result = mockMvc.perform(get("/game/1")).andExpect(status().isOk()).andReturn();
+        GameDto game= mapper.readValue(result.getResponse().getContentAsString(), GameDto.class);
+        System.out.println(game.getCopiesDto().isEmpty());
+        System.out.println(game.getEditorDto().getName());
+        System.out.println(game.getGameStyleDto().getName());
     }
 
 }

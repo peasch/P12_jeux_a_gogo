@@ -8,6 +8,7 @@ import java.util.List;
 public interface GameService {
 
     List<GameDto> getGames();
+    GameDto getGameById(int id);
     GameDto save (GameDto gameDto) throws ValidationException;
     GameDto update(GameDto gameToUpdateDto)throws ValidationException;
     void delete(int id);
