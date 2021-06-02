@@ -1,6 +1,7 @@
 package com.peasch.jeuxagogo.service.impl;
 
 import com.peasch.jeuxagogo.model.Mappers.GameMapper;
+import com.peasch.jeuxagogo.model.dtos.CopyDto;
 import com.peasch.jeuxagogo.model.dtos.GameDto;
 import com.peasch.jeuxagogo.repository.GameDao;
 import com.peasch.jeuxagogo.service.CopyService;
@@ -12,12 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.ValidationException;
 import javax.validation.Validator;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,7 +37,7 @@ public class GameServiceImpl implements GameService {
 
     //--------------------------------Metier--------------------------------------------
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+
     public List<GameDto> getGames() {
         return dao.findAll().stream().map(mapper::fromGameToStrictDto)
                 .collect(Collectors.toList());
@@ -48,7 +47,14 @@ public class GameServiceImpl implements GameService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public GameDto save(GameDto gameDto) {
         this.validationOfNewGame(gameDto);
-        return mapper.fromGameToStrictDto(dao.save(mapper.fromDtoToGame(gameDto)));
+        GameDto savedGame = mapper.fromGameToStrictDto(dao.save(mapper.fromDtoToGame(gameDto)));
+        if (savedGame.getCopiesDto() != null) {
+            for (CopyDto copy : savedGame.getCopiesDto()) {
+                copyService.save(copy);
+            }
+        }
+
+        return savedGame;
     }
 
 
@@ -64,7 +70,9 @@ public class GameServiceImpl implements GameService {
         game.setAgeMin(gameToUpdateDto.getAgeMin());
         game.setMinPlayers(gameToUpdateDto.getMinPlayers());
         game.setRulesLink(gameToUpdateDto.getRulesLink());
-        this.validationOfUpdatingGame(game);
+
+        CustomConstraintValidation<GameDto> customConstraintValidation = new CustomConstraintValidation<>();
+        customConstraintValidation.validate(gameToUpdateDto);
 
         return mapper.fromGameToStrictDto(dao.save(mapper.fromDtoToGame(game)));
     }
@@ -94,30 +102,17 @@ public class GameServiceImpl implements GameService {
     }
 
     //--------------------------VALIDATIONS---------------------------------
-    private void constraintValidation(Set<ConstraintViolation<GameDto>> constraintViolations) {
-        if (!constraintViolations.isEmpty()) {
-            Log.info(Text_FR.INVALID_GAME);
 
-            for (ConstraintViolation<GameDto> contraintes : constraintViolations) {
-                Log.info(contraintes.getRootBeanClass().getSimpleName() +
-                        "." + contraintes.getPropertyPath() + " " + contraintes.getMessage());
-            }
-            throw new ValidationException(Text_FR.INCORRECT_INFORMATION);
-        }
-    }
 
     private void validationOfNewGame(GameDto gameDto) throws ValidationException {
-        Set<ConstraintViolation<GameDto>> constraintViolations = validator.validate(gameDto);
-
         if (this.checkName(gameDto.getName())) {
             Log.info(Text_FR.ALREADY_USED_GAME_NAME);
             throw new ValidationException(Text_FR.ALREADY_USED_GAME_NAME);
         }
-        this.constraintValidation(constraintViolations);
+        CustomConstraintValidation<GameDto> customConstraintValidation = new CustomConstraintValidation<>();
+        customConstraintValidation.validate(gameDto);
+
     }
 
-    private void validationOfUpdatingGame(GameDto gameToUpdateDto) throws ValidationException {
-        Set<ConstraintViolation<GameDto>> constraintViolations = validator.validate(gameToUpdateDto);
-        this.constraintValidation(constraintViolations);
-    }
+
 }

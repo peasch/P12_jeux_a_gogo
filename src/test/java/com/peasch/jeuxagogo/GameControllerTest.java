@@ -59,11 +59,12 @@ public class GameControllerTest {
     void ADD_AND_UPDATE_AND_DELETE_GAME() throws Exception {
         GameDto game = GameDto.builder().name("cluedo").ageMin(3).available(true).rulesLink("dfsdgsg")
                 .minPlayers(2).maxPlayers(6).available(true).build();
-        EditorDto editorDto= mapper.readValue(mockMvc.perform(get("/editor/1"))
-                .andReturn().getResponse().getContentAsString(),EditorDto.class);
-        game.setEditorDto(editorDto);
+        game.setEditorDto( mapper.readValue(mockMvc.perform(get("/editor/1"))
+                .andReturn().getResponse().getContentAsString(),EditorDto.class));
+
         MvcResult result = mockMvc.perform(post("/game/add").content(mapper.writeValueAsString(game))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk()).andReturn();
+
         GameDto gameToUpdate = mapper.readValue(result.getResponse().getContentAsString(), GameDto.class);
 
         gameToUpdate.setMinPlayers(3);
