@@ -33,9 +33,6 @@ public class CopyServiceImpl implements CopyService {
     @Autowired
     private GameService gameService;
 
-
-    Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-
     //------------------------Métier----------------------------------------------
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
@@ -55,16 +52,6 @@ public class CopyServiceImpl implements CopyService {
         return mapper.fromCopyToDtoWithoutGame(dao.save(mapper.fromDtoToCopy(copy)));
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
-    public CopyDto findByCode(String code) {
-        return mapper.fromCopyToDtoWithoutGame(dao.findByCode(code));
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
-    public CopyDto findById(int id) {
-        return mapper.fromCopyToDtoWithoutGame(dao.findById(id).get());
-    }
-
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void delete(int id){
         dao.delete(mapper.fromDtoToCopy(this.findById(id)));
@@ -76,6 +63,19 @@ public class CopyServiceImpl implements CopyService {
             this.delete(copy.getId());
         }
     }
+//--------------------------Findings ----------------------------------------------
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+    public CopyDto findByCode(String code) {
+        return mapper.fromCopyToDtoWithoutGame(dao.findByCode(code));
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+    public CopyDto findById(int id) {
+        return mapper.fromCopyToDtoWithoutGame(dao.findById(id).get());
+    }
+
+
 
     // ---------------------------------Checking fields --------------------------
 

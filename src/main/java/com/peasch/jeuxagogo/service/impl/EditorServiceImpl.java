@@ -2,7 +2,6 @@ package com.peasch.jeuxagogo.service.impl;
 
 import com.peasch.jeuxagogo.model.Mappers.EditorMapper;
 import com.peasch.jeuxagogo.model.dtos.EditorDto;
-import com.peasch.jeuxagogo.model.dtos.GameDto;
 import com.peasch.jeuxagogo.repository.EditorDao;
 import com.peasch.jeuxagogo.service.EditorService;
 import com.peasch.jeuxagogo.service.misc.Text_FR;
@@ -12,12 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
 import javax.validation.ValidationException;
-import javax.validation.Validator;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,8 +25,6 @@ public class EditorServiceImpl implements EditorService {
     @Autowired
     private EditorDao dao;
 
-
-    Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     //----------------------------------Métier-------------------------------------------
 
@@ -55,7 +48,8 @@ public class EditorServiceImpl implements EditorService {
         editorDto.setName(editorToUpdate.getName());
         editorDto.setWebsite(editorToUpdate.getWebsite());
         editorDto.setGames(editorToUpdate.getGames());
-        this.validationOfUpdatingEditor(editorDto);
+        CustomConstraintValidation<EditorDto> customConstraintValidation = new CustomConstraintValidation<>();
+        customConstraintValidation.validate(editorToUpdate);
         return mapper.fromEditorToDtoWithoutGames(dao.save(mapper.fromDtoToEditor(editorDto)));
     }
 
@@ -95,9 +89,5 @@ public class EditorServiceImpl implements EditorService {
         customConstraintValidation.validate(editorDto);
     }
 
-    private void validationOfUpdatingEditor(EditorDto editorToUpdateDto) throws ValidationException {
-        CustomConstraintValidation<EditorDto> customConstraintValidation = new CustomConstraintValidation<>();
-        customConstraintValidation.validate(editorToUpdateDto);
-    }
 
 }

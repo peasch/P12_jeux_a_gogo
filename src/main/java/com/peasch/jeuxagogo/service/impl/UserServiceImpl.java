@@ -31,8 +31,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserDao dao;
 
-    Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public List<UserDto> getUsers() {
@@ -47,10 +45,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public UserDto update (UserDto userToUpdate){
+        UserDto user = this.findById(userToUpdate.getId());
+        user.setAdhesionDate(userToUpdate.getAdhesionDate());
+        user.setBirthDate(userToUpdate.getBirthDate());
+        user.setEmail(userToUpdate.getEmail());
+        user.setFirstname(userToUpdate.getFirstname());
+        user.setName(userToUpdate.getName());
+        user.setUsername(userToUpdate.getUsername());
+        CustomConstraintValidation<UserDto> customConstraintValidation = new CustomConstraintValidation<>();
+        customConstraintValidation.validate(user);
+
+        return mapper.fromUserToStrictDto(dao.save(mapper.fromDtoToUser(user)));
+    }
+
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void deleteUser(int id) {
         User user = dao.findUserById(id);
         dao.delete(user);
     }
+
+
 
     //------------------ FINDING USER -----------------------------------
 
@@ -82,6 +98,8 @@ public class UserServiceImpl implements UserService {
         return this.findByEmail(email)!= null;
 
     }
+
+    //-------------------------------------Validations------------------------------------
 
     private void validationOfUser(UserDto user) throws ValidationException {
         if (this.checkUsername(user.getUsername())) {
