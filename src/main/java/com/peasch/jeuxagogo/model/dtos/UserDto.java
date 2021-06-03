@@ -1,4 +1,5 @@
 package com.peasch.jeuxagogo.model.dtos;
+import com.peasch.jeuxagogo.model.entities.Advice;
 import com.peasch.jeuxagogo.model.entities.Friendship;
 import com.peasch.jeuxagogo.model.entities.Role;
 import com.peasch.jeuxagogo.model.entities.User;
@@ -9,6 +10,7 @@ import javax.validation.constraints.Past;
 import java.io.Serializable;
 import java.time.LocalDate;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @NoArgsConstructor @AllArgsConstructor
@@ -37,4 +39,5 @@ public class UserDto implements Serializable {
     private Set<UserDto> godsons;
     private Set<FriendshipDto> askedFriends;
     private Set<FriendshipDto> askerUsers;
+    private Set<AdviceDto> advices = new HashSet<>();
 }

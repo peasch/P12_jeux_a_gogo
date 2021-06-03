@@ -67,5 +67,7 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "asker")
     private Set<Friendship> askerUsers = new HashSet<>();
 
+    @OneToMany(mappedBy = "user")
+    private Set<Advice> advices = new HashSet<>();
 
 }

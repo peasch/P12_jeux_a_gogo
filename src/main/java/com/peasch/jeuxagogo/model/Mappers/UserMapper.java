@@ -19,6 +19,7 @@ public interface UserMapper {
     @Mapping(target = "godsons", ignore = true)
     @Mapping(target = "askedFriends", ignore = true)
     @Mapping(target = "askerUsers", ignore = true)
+    @Mapping(target = "advices", ignore = true)
     UserDto fromUserToStrictDto(User user);
 
     @Named("toDtoWithRoles")
@@ -27,6 +28,7 @@ public interface UserMapper {
     @Mapping(target = "godsons", ignore = true)
     @Mapping(target = "askedFriends", ignore = true)
     @Mapping(target = "askerUsers", ignore = true)
+    @Mapping(target = "advices", ignore = true)
     UserDto fromUserToDtoWithrole(User user);
 
 }

@@ -14,9 +14,9 @@ import javax.validation.constraints.NotNull;
 public class AdviceDto {
     private int id;
     @NotNull
-    private Game game;
+    private GameDto game;
     @NotNull
-    private User user;
+    private UserDto user;
     private String commentary;
     @NotNull
     private int rating;

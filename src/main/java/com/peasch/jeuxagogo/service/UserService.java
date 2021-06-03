@@ -16,5 +16,7 @@ public interface UserService {
     UserDto findById(int id);
 
     UserDto findByUsername(String username);
-//--------------------------------------
+
+    UserDto addRoleToUser(UserDto user, int id);
+
 }

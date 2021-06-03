@@ -55,5 +55,14 @@ public class UserController {
 
         }
     }
+    @PutMapping("/addRole/{id}")
+    public ResponseEntity addRoleToUser(@PathVariable(name = "id") int id,@RequestBody UserDto user) {
+        try {
+            return new ResponseEntity(service.addRoleToUser(user,id), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+
+        }
+    }
 
 }
