@@ -88,20 +88,8 @@ public class CopyServiceImpl implements CopyService {
 
     //---------------------------------Validation --------------------------------
 
-    private void constraintValidation(Set<ConstraintViolation<CopyDto>> constraintViolations) {
-        if (!constraintViolations.isEmpty()) {
-            Log.info(Text_FR.INVALID_GAME);
-
-            for (ConstraintViolation<CopyDto> contraintes : constraintViolations) {
-                Log.info(contraintes.getRootBeanClass().getSimpleName() +
-                        "." + contraintes.getPropertyPath() + " " + contraintes.getMessage());
-            }
-            throw new ValidationException(Text_FR.INCORRECT_INFORMATION);
-        }
-    }
 
     private void validationOfNewCopy(CopyDto copyDto) throws ValidationException {
-        Set<ConstraintViolation<CopyDto>> constraintViolations = validator.validate(copyDto);
         if (this.checkingGame(copyDto.getGame().getId())) {
             Log.info(Text_FR.NOT_FOUND_GAME);
             throw new ValidationException(Text_FR.NOT_FOUND_GAME);
@@ -110,6 +98,7 @@ public class CopyServiceImpl implements CopyService {
             Log.info(Text_FR.ALREADY_USED_COPY_CODE);
             throw new ValidationException(Text_FR.ALREADY_USED_COPY_CODE);
         }
-        this.constraintValidation(constraintViolations);
+        CustomConstraintValidation<CopyDto> customConstraintValidation = new CustomConstraintValidation<>();
+        customConstraintValidation.validate(copyDto);
     }
 }

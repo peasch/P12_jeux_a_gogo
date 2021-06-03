@@ -33,8 +33,6 @@ public class GameServiceImpl implements GameService {
     private CopyService copyService;
 
 
-    Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-
     //--------------------------------Metier--------------------------------------------
 
 

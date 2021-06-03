@@ -1,5 +1,6 @@
 package com.peasch.jeuxagogo.service.impl;
 
+import com.peasch.jeuxagogo.model.dtos.EditorDto;
 import com.peasch.jeuxagogo.model.dtos.UserDto;
 import com.peasch.jeuxagogo.model.Mappers.UserMapper;
 import com.peasch.jeuxagogo.model.entities.User;
@@ -83,7 +84,6 @@ public class UserServiceImpl implements UserService {
     }
 
     private void validationOfUser(UserDto user) throws ValidationException {
-        Set<ConstraintViolation<UserDto>> constraintViolations = validator.validate(user);
         if (this.checkUsername(user.getUsername())) {
             throw new ValidationException(Text_FR.ALREADY_USED_USERNAME);
 
@@ -91,14 +91,7 @@ public class UserServiceImpl implements UserService {
         if (this.checkEmail(user.getEmail())) {
             throw new ValidationException(Text_FR.ALREADY_USED_EMAIL);
         }
-        if (!constraintViolations.isEmpty()) {
-            System.out.println(Text_FR.INVALID_USER);
-
-            for (ConstraintViolation<UserDto> contraintes : constraintViolations) {
-                System.out.println(contraintes.getRootBeanClass().getSimpleName() +
-                        "." + contraintes.getPropertyPath() + " " + contraintes.getMessage());
-            }
-            throw new ValidationException(Text_FR.INCORRECT_INFORMATION);
-        }
+        CustomConstraintValidation<UserDto> customConstraintValidation = new CustomConstraintValidation<>();
+        customConstraintValidation.validate(user);
     }
 }

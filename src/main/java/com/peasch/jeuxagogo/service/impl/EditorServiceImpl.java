@@ -2,6 +2,7 @@ package com.peasch.jeuxagogo.service.impl;
 
 import com.peasch.jeuxagogo.model.Mappers.EditorMapper;
 import com.peasch.jeuxagogo.model.dtos.EditorDto;
+import com.peasch.jeuxagogo.model.dtos.GameDto;
 import com.peasch.jeuxagogo.repository.EditorDao;
 import com.peasch.jeuxagogo.service.EditorService;
 import com.peasch.jeuxagogo.service.misc.Text_FR;
@@ -83,30 +84,20 @@ public class EditorServiceImpl implements EditorService {
     }
 
     //-------------------------------------Validations------------------------------------
-    private void constraintValidation(Set<ConstraintViolation<EditorDto>> constraintViolations) {
-        if (!constraintViolations.isEmpty()) {
-            System.out.println(Text_FR.INVALID_GAME);
 
-            for (ConstraintViolation<EditorDto> contraintes : constraintViolations) {
-                System.out.println(contraintes.getRootBeanClass().getSimpleName() +
-                        "." + contraintes.getPropertyPath() + " " + contraintes.getMessage());
-            }
-            throw new ValidationException(Text_FR.INCORRECT_INFORMATION);
-        }
-    }
 
-    private void validationOfNewEditor(EditorDto editorDto) throws ValidationException {
-        Set<ConstraintViolation<EditorDto>> constraintViolations = validator.validate(editorDto);
+    private void validationOfNewEditor(EditorDto editorDto) throws ValidationException {;
 
         if (this.checkName(editorDto.getName())) {
             throw new ValidationException(Text_FR.ALREADY_USED_GAME_NAME);
         }
-        this.constraintValidation(constraintViolations);
+        CustomConstraintValidation<EditorDto> customConstraintValidation = new CustomConstraintValidation<>();
+        customConstraintValidation.validate(editorDto);
     }
 
-    private void validationOfUpdatingEditor(EditorDto editortoUpdateDto) throws ValidationException {
-        Set<ConstraintViolation<EditorDto>> constraintViolations = validator.validate(editortoUpdateDto);
-        this.constraintValidation(constraintViolations);
+    private void validationOfUpdatingEditor(EditorDto editorToUpdateDto) throws ValidationException {
+        CustomConstraintValidation<EditorDto> customConstraintValidation = new CustomConstraintValidation<>();
+        customConstraintValidation.validate(editorToUpdateDto);
     }
 
 }
