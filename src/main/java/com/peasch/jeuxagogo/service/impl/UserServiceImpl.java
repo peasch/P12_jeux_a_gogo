@@ -1,10 +1,12 @@
 package com.peasch.jeuxagogo.service.impl;
 
 import com.peasch.jeuxagogo.model.dtos.EditorDto;
+import com.peasch.jeuxagogo.model.dtos.RoleDto;
 import com.peasch.jeuxagogo.model.dtos.UserDto;
 import com.peasch.jeuxagogo.model.Mappers.UserMapper;
 import com.peasch.jeuxagogo.model.entities.User;
 import com.peasch.jeuxagogo.repository.UserDao;
+import com.peasch.jeuxagogo.service.RoleService;
 import com.peasch.jeuxagogo.service.misc.Text_FR;
 import com.peasch.jeuxagogo.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +32,9 @@ public class UserServiceImpl implements UserService {
     private UserMapper mapper;
     @Autowired
     private UserDao dao;
+
+    @Autowired
+    private RoleService roleService;
 
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
@@ -67,6 +72,14 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public UserDto addRoleToUser(UserDto user, int id){
+        UserDto userDto = mapper.fromUserToDtoWithrole(dao.findUserById(user.getId()));
+        Set<RoleDto> roles = userDto.getRolesDto();
+        roles.add(roleService.findById(id));
+        userDto.setRolesDto(roles);
+       return this.update(userDto);
+    }
 
     //------------------ FINDING USER -----------------------------------
 

@@ -2,7 +2,6 @@ package com.peasch.jeuxagogo.service.impl;
 
 import com.peasch.jeuxagogo.model.Mappers.CopyMapper;
 import com.peasch.jeuxagogo.model.dtos.CopyDto;
-import com.peasch.jeuxagogo.model.dtos.GameDto;
 import com.peasch.jeuxagogo.repository.CopyDao;
 import com.peasch.jeuxagogo.service.CopyService;
 import com.peasch.jeuxagogo.service.GameService;
@@ -12,13 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
 import javax.validation.ValidationException;
-import javax.validation.Validator;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
