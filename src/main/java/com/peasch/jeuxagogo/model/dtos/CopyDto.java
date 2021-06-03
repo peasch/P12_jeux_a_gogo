@@ -11,11 +11,11 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Builder
-public class CopiesDto implements Serializable {
+public class CopyDto implements Serializable {
     private int id;
     @NotNull
     private String code;
-    @NotNull
+
     private Boolean available;
     @NotNull
     private GameDto game;

@@ -11,12 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
 import javax.validation.ValidationException;
-import javax.validation.Validator;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,8 +25,6 @@ public class EditorServiceImpl implements EditorService {
     @Autowired
     private EditorDao dao;
 
-
-    Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     //----------------------------------Métier-------------------------------------------
 
@@ -54,7 +48,8 @@ public class EditorServiceImpl implements EditorService {
         editorDto.setName(editorToUpdate.getName());
         editorDto.setWebsite(editorToUpdate.getWebsite());
         editorDto.setGames(editorToUpdate.getGames());
-        this.validationOfUpdatingEditor(editorDto);
+        CustomConstraintValidation<EditorDto> customConstraintValidation = new CustomConstraintValidation<>();
+        customConstraintValidation.validate(editorToUpdate);
         return mapper.fromEditorToDtoWithoutGames(dao.save(mapper.fromDtoToEditor(editorDto)));
     }
 
@@ -83,30 +78,16 @@ public class EditorServiceImpl implements EditorService {
     }
 
     //-------------------------------------Validations------------------------------------
-    private void constraintValidation(Set<ConstraintViolation<EditorDto>> constraintViolations) {
-        if (!constraintViolations.isEmpty()) {
-            System.out.println(Text_FR.INVALID_GAME);
 
-            for (ConstraintViolation<EditorDto> contraintes : constraintViolations) {
-                System.out.println(contraintes.getRootBeanClass().getSimpleName() +
-                        "." + contraintes.getPropertyPath() + " " + contraintes.getMessage());
-            }
-            throw new ValidationException(Text_FR.INCORRECT_INFORMATION);
-        }
-    }
 
-    private void validationOfNewEditor(EditorDto editorDto) throws ValidationException {
-        Set<ConstraintViolation<EditorDto>> constraintViolations = validator.validate(editorDto);
+    private void validationOfNewEditor(EditorDto editorDto) throws ValidationException {;
 
         if (this.checkName(editorDto.getName())) {
             throw new ValidationException(Text_FR.ALREADY_USED_GAME_NAME);
         }
-        this.constraintValidation(constraintViolations);
+        CustomConstraintValidation<EditorDto> customConstraintValidation = new CustomConstraintValidation<>();
+        customConstraintValidation.validate(editorDto);
     }
 
-    private void validationOfUpdatingEditor(EditorDto editortoUpdateDto) throws ValidationException {
-        Set<ConstraintViolation<EditorDto>> constraintViolations = validator.validate(editortoUpdateDto);
-        this.constraintValidation(constraintViolations);
-    }
 
 }

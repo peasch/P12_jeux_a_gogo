@@ -1,5 +1,6 @@
 package com.peasch.jeuxagogo.service.impl;
 
+import com.peasch.jeuxagogo.model.dtos.EditorDto;
 import com.peasch.jeuxagogo.model.dtos.UserDto;
 import com.peasch.jeuxagogo.model.Mappers.UserMapper;
 import com.peasch.jeuxagogo.model.entities.User;
@@ -30,8 +31,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserDao dao;
 
-    Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public List<UserDto> getUsers() {
@@ -46,10 +45,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public UserDto update (UserDto userToUpdate){
+        UserDto user = this.findById(userToUpdate.getId());
+        user.setAdhesionDate(userToUpdate.getAdhesionDate());
+        user.setBirthDate(userToUpdate.getBirthDate());
+        user.setEmail(userToUpdate.getEmail());
+        user.setFirstname(userToUpdate.getFirstname());
+        user.setName(userToUpdate.getName());
+        user.setUsername(userToUpdate.getUsername());
+        CustomConstraintValidation<UserDto> customConstraintValidation = new CustomConstraintValidation<>();
+        customConstraintValidation.validate(user);
+
+        return mapper.fromUserToStrictDto(dao.save(mapper.fromDtoToUser(user)));
+    }
+
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void deleteUser(int id) {
         User user = dao.findUserById(id);
         dao.delete(user);
     }
+
+
 
     //------------------ FINDING USER -----------------------------------
 
@@ -82,8 +99,9 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    //-------------------------------------Validations------------------------------------
+
     private void validationOfUser(UserDto user) throws ValidationException {
-        Set<ConstraintViolation<UserDto>> constraintViolations = validator.validate(user);
         if (this.checkUsername(user.getUsername())) {
             throw new ValidationException(Text_FR.ALREADY_USED_USERNAME);
 
@@ -91,14 +109,7 @@ public class UserServiceImpl implements UserService {
         if (this.checkEmail(user.getEmail())) {
             throw new ValidationException(Text_FR.ALREADY_USED_EMAIL);
         }
-        if (!constraintViolations.isEmpty()) {
-            System.out.println(Text_FR.INVALID_USER);
-
-            for (ConstraintViolation<UserDto> contraintes : constraintViolations) {
-                System.out.println(contraintes.getRootBeanClass().getSimpleName() +
-                        "." + contraintes.getPropertyPath() + " " + contraintes.getMessage());
-            }
-            throw new ValidationException(Text_FR.INCORRECT_INFORMATION);
-        }
+        CustomConstraintValidation<UserDto> customConstraintValidation = new CustomConstraintValidation<>();
+        customConstraintValidation.validate(user);
     }
 }
