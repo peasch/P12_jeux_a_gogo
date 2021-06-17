@@ -1,6 +1,4 @@
 package com.peasch.jeuxagogo.controller;
-
-import com.peasch.jeuxagogo.model.dtos.GameDto;
 import com.peasch.jeuxagogo.model.dtos.GameStyleDto;
 import com.peasch.jeuxagogo.service.GameStyleService;
 import org.springframework.beans.factory.annotation.Autowired;

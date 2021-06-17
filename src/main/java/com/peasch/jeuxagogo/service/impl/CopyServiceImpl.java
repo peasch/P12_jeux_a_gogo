@@ -50,6 +50,7 @@ public class CopyServiceImpl implements CopyService {
     public void delete(int id){
         dao.delete(mapper.fromDtoToCopy(this.findById(id)));
     }
+
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void deleteAllByGameId(int id){
         List<CopyDto> copies = this.getCopiesByGameId(id);

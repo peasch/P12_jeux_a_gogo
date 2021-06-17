@@ -1,7 +1,6 @@
 package com.peasch.jeuxagogo.service.impl;
 
 import com.peasch.jeuxagogo.model.Mappers.RoleMapper;
-import com.peasch.jeuxagogo.model.dtos.EditorDto;
 import com.peasch.jeuxagogo.model.dtos.RoleDto;
 import com.peasch.jeuxagogo.repository.RoleDao;
 import com.peasch.jeuxagogo.service.RoleService;
@@ -30,15 +29,17 @@ public class RoleServiceImpl implements RoleService {
     }
 
 
-
     //------------------------------FInding -----------------------------
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
-    public RoleDto findById(int id){
+    public RoleDto findById(int id) {
         return mapper.fromRoletoDto(dao.findById(id).get());
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+    public RoleDto findByRole(String role) {
+            return mapper.fromRoletoDto(dao.findByRole(role));
+        }
 
 
-
-}
+    }

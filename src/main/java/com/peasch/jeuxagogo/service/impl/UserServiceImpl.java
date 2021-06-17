@@ -1,6 +1,5 @@
 package com.peasch.jeuxagogo.service.impl;
 
-import com.peasch.jeuxagogo.model.dtos.EditorDto;
 import com.peasch.jeuxagogo.model.dtos.RoleDto;
 import com.peasch.jeuxagogo.model.dtos.UserDto;
 import com.peasch.jeuxagogo.model.Mappers.UserMapper;
@@ -14,18 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
 import javax.validation.ValidationException;
-import javax.validation.Validator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 
 @Service
-@Slf4j
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -58,6 +52,7 @@ public class UserServiceImpl implements UserService {
         user.setFirstname(userToUpdate.getFirstname());
         user.setName(userToUpdate.getName());
         user.setUsername(userToUpdate.getUsername());
+        user.setAdvices(userToUpdate.getAdvices());
         CustomConstraintValidation<UserDto> customConstraintValidation = new CustomConstraintValidation<>();
         customConstraintValidation.validate(user);
 

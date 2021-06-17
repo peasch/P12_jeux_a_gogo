@@ -37,8 +37,7 @@ public class Game implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="fk_editor")
     private Editor editor;
-    @Column(name="borrowing_quantity")
-    private int borrowingQuantity;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_game_style")
     private GameStyle gameStyle;
@@ -47,5 +46,7 @@ public class Game implements Serializable {
     @OneToMany(mappedBy = "game",fetch = FetchType.LAZY)
     private Set<Copy> copies = new HashSet<>();
 
+    @OneToMany(mappedBy = "game",fetch = FetchType.LAZY)
+    private Set<Advice> advices = new HashSet<>();
 
 }
