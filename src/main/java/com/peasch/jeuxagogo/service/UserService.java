@@ -19,4 +19,8 @@ public interface UserService {
 
     UserDto addRoleToUser(UserDto user, int id);
 
+    UserDto saveWithRole(UserDto userDto);
+
+    UserDto findByUsernameWithRoles(String username);
+
 }

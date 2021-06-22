@@ -44,8 +44,7 @@ public class AuthenticationController {
         Set<RoleDto> roles = new HashSet<>();
         roles.add(roleService.findByRole("USER"));
         user.setRolesDto(roles);
-        UserDto userExists = userService.findByUsername(user.getUsername());
-        if (userExists != null) {
+        if (userService.findByUsername(user.getUsername()) != null) {
             throw new BadCredentialsException("User with username: " + user.getUsername() + " already exists");
         }
         customUserDetailsService.saveUser(user);
@@ -55,15 +54,14 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody UserDto user) throws AuthenticationException {
+    public ResponseEntity login(@RequestBody UserDto user){
         try {
             String userName = user.getUsername();
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userName, user.getPassword()));
 
-            return new ResponseEntity(jwtTokenProvider.createToken(userName, userService.findByUsername(userName).getRolesDto()), HttpStatus.OK);
+            return new ResponseEntity(jwtTokenProvider.createToken(userName, userService.findByUsernameWithRoles(userName).getRolesDto()), HttpStatus.OK);
 
         } catch (BadCredentialsException e) {
-            /*throw new AuthenticationException("Invalid Username/password");*/
             return new ResponseEntity("Invalid Username/password", HttpStatus.BAD_REQUEST);
         }
 

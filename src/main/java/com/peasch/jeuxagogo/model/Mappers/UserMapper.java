@@ -31,4 +31,13 @@ public interface UserMapper {
     @Mapping(target = "advices", ignore = true)
     UserDto fromUserToDtoWithrole(User user);
 
+
+    @Named("toDtoWithoutRoles")
+    @Mapping(target = "rolesDto", ignore = true)
+    @Mapping(target = "godfather", ignore = true)
+    @Mapping(target = "godsons", ignore = true)
+    @Mapping(target = "askedFriends", ignore = true)
+    @Mapping(target = "askerUsers", ignore = true)
+    @Mapping(target = "advices", ignore = true)
+    UserDto fromUserToDtoWithoutRole(User user);
 }

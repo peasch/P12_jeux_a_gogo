@@ -1,9 +1,12 @@
 package com.peasch.jeuxagogo.service.impl;
 
+import com.peasch.jeuxagogo.model.Mappers.RoleMapper;
 import com.peasch.jeuxagogo.model.dtos.RoleDto;
 import com.peasch.jeuxagogo.model.dtos.UserDto;
 import com.peasch.jeuxagogo.model.Mappers.UserMapper;
+import com.peasch.jeuxagogo.model.entities.Role;
 import com.peasch.jeuxagogo.model.entities.User;
+import com.peasch.jeuxagogo.repository.RoleDao;
 import com.peasch.jeuxagogo.repository.UserDao;
 import com.peasch.jeuxagogo.service.RoleService;
 import com.peasch.jeuxagogo.service.misc.Text_FR;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import javax.validation.ValidationException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,6 +30,10 @@ public class UserServiceImpl implements UserService {
     private UserMapper mapper;
     @Autowired
     private UserDao dao;
+    @Autowired
+    private RoleDao roleDao;
+    @Autowired
+    private RoleMapper roleMapper;
 
     @Autowired
     private RoleService roleService;
@@ -38,9 +46,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public UserDto save(UserDto userDto) throws Exception {
+    public UserDto save(UserDto userDto) {
         this.validationOfUser(userDto);
-        return mapper.fromUserToStrictDto(dao.save(mapper.fromDtoToUser(userDto)));
+        dao.save(mapper.fromDtoToUser(userDto));
+        for (RoleDto role: userDto.getRolesDto()){
+            Role roleUpdate = roleDao.findByRole(role.getRole());
+            Set<User> users = roleUpdate.getUsers();
+            users.add(mapper.fromDtoToUser(userDto));
+            roleUpdate.setUsers(users);
+            roleDao.save(roleUpdate);
+        }
+        return userDto;
+    }
+    public UserDto saveWithRole(UserDto userDto) {
+        User user = mapper.fromDtoToUser(userDto);
+        Set<RoleDto> rolesDto = userDto.getRolesDto();
+        Set<Role> roles = rolesDto.stream().map(roleMapper::fromDtoToRole).collect(Collectors.toSet());
+        user.setRoles(roles);
+        dao.save(user);
+        for (Role role : roles) {
+            Role roleUpdate = roleDao.findByRole(role.getRole());
+            Set<User> users = roleUpdate.getUsers();
+            users.add(user);
+            roleUpdate.setUsers(users);
+            roleDao.save(roleUpdate);
+        }
+        return mapper.fromUserToDtoWithrole(user);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -86,6 +117,10 @@ public class UserServiceImpl implements UserService {
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public UserDto findByUsername(String username) {
         return mapper.fromUserToStrictDto(dao.findUserByUsername(username));
+    }
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+    public UserDto findByUsernameWithRoles(String username) {
+        return mapper.fromUserToDtoWithrole((dao.findUserByUsername(username)));
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)

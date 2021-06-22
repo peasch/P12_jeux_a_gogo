@@ -50,7 +50,7 @@ public class JwtTokenProvider {
 
     public Authentication getAuthentication(String token) { // Nous récupérons l'authentification courante de l'utilsiateur courant.
         UserDetails userDetails =  userDetailsService.loadUserByUsername(getUsername(token));
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetailsService.getAuthorities());
     }
 
     public String resolveToken(HttpServletRequest req) { // Méthode qui va extraire de la requête Http le token.

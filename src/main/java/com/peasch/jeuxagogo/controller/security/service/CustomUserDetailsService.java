@@ -31,7 +31,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserDto user = userService.findByUsername(username);
+        UserDto user = userService.findByUsernameWithRoles(username);
         if(user != null) {
             List<GrantedAuthority> authorities = getUserAuthority(user.getRolesDto());
             return buildUserForAuthentication(user, authorities);
@@ -39,9 +39,10 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("username not found");
         }
     }
+
     public void saveUser(UserDto user) throws Exception { // Pour sauver un nouvel utilisateur
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        userService.save(user);
+        userService.saveWithRole(user);
     }
 
 

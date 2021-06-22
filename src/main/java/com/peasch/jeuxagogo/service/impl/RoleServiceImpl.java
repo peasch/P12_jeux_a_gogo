@@ -38,7 +38,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public RoleDto findByRole(String role) {
-            return mapper.fromRoletoDto(dao.findByRole(role));
+            return mapper.fromRoleToDtoWithUsers(dao.findByRole(role));
         }
 
 
