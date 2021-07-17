@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public List<UserDto> getUsers() {
-        return dao.findAll().stream().map(mapper::fromUserToStrictDto)
+        return dao.findAll().stream().map(mapper::fromUserToDtoWithrole)
                 .collect(Collectors.toList());
     }
 

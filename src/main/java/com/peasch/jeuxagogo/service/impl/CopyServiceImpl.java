@@ -41,8 +41,11 @@ public class CopyServiceImpl implements CopyService {
 
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public CopyDto save(CopyDto copy) {
+    public CopyDto save(CopyDto copy,int id) {
+        copy.setGame(gameService.findById(id));
+        copy.setAvailable(true);
         this.validationOfNewCopy(copy);
+
         return mapper.fromCopyToDtoWithoutGame(dao.save(mapper.fromDtoToCopy(copy)));
     }
 

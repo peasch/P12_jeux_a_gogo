@@ -15,6 +15,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.header.writers.StaticHeadersWriter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -22,15 +25,17 @@ import javax.servlet.http.HttpServletResponse;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
-   private CustomUserDetailsService uds;
+    private CustomUserDetailsService uds;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-    private static final String EMPLOYEE ="EMPLOYEE";
-    private static final String USER ="USER";
-    private static final String ADMIN ="ADMIN";
+    private static final String EMPLOYEE = "EMPLOYEE";
+    private static final String USER = "USER";
+    private static final String ADMIN = "ADMIN";
+    private static final String MEMBER = "MEMBER";
+    private static final String MODERATOR = "MODERATOR";
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -42,10 +47,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.httpBasic().disable().csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.authorizeRequests()
-                .antMatchers("/auth/*").permitAll()
-                .antMatchers("/user/**").hasAnyRole(EMPLOYEE,ADMIN)
+                .antMatchers("/auth/**").permitAll()
+                .antMatchers("/user/**").hasAnyRole(USER, ADMIN,MODERATOR)
+                .antMatchers("/game/add").hasAnyRole(ADMIN,MODERATOR)
+                .antMatchers("/copy/**").hasAnyRole(ADMIN,MODERATOR)
+                .antMatchers("/game/all").permitAll()
+                .anyRequest().authenticated()
                 .and().exceptionHandling().authenticationEntryPoint(unauthorizedEntryPoint()).and()
                 .apply(new JwtConfigurer(jwtTokenProvider));
+        http.headers()
+                .addHeaderWriter(
+                        new StaticHeadersWriter("Access-Control-Allow-Origin", "http://localhost:4200")
+                );
+        http.cors();
     }
 
 
@@ -74,5 +88,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public UserDetailsService myUserDetails() { // Appel à CustomDetailsService.
         return new CustomUserDetailsService();
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedOrigins("*")
+                        .allowedMethods("POST","GET","PUT","DELETE","OPTIONS");
+            }
+        };
     }
 }

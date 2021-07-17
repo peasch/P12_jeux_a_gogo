@@ -12,10 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.naming.AuthenticationException;
 import java.util.HashMap;
@@ -39,8 +36,9 @@ public class AuthenticationController {
     private RoleService roleService;
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
+
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody UserDto user) throws Exception {
+    public ResponseEntity register(@RequestBody UserDto user)  {
         Set<RoleDto> roles = new HashSet<>();
         roles.add(roleService.findByRole("USER"));
         user.setRolesDto(roles);
@@ -61,10 +59,13 @@ public class AuthenticationController {
 
             return new ResponseEntity(jwtTokenProvider.createToken(userName, userService.findByUsernameWithRoles(userName).getRolesDto()), HttpStatus.OK);
 
+
         } catch (BadCredentialsException e) {
             return new ResponseEntity("Invalid Username/password", HttpStatus.BAD_REQUEST);
         }
 
     }
+
+
 
 }

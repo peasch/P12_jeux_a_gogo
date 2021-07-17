@@ -34,7 +34,7 @@ public class UserController {
     @GetMapping("/username/{username}")
     public ResponseEntity findByUsername(@PathVariable(name = "username") String username) {
         if (service.findByUsername(username) != null) {
-            return new ResponseEntity(service.findByUsername(username), HttpStatus.OK);
+            return new ResponseEntity(service.findByUsername(username),HttpStatus.OK );
         } else {
             return new ResponseEntity("cet utilisateur n'existe pas", HttpStatus.NOT_FOUND);
         }
@@ -65,4 +65,12 @@ public class UserController {
         }
     }
 
+    @GetMapping("/userWithRoles/{username}")
+    public ResponseEntity getRolesOfUser(@PathVariable(name = "username")String username){
+        if (service.findByUsername(username) != null) {
+            return new ResponseEntity(service.findByUsernameWithRoles(username),HttpStatus.OK);
+        } else {
+            return new ResponseEntity("cet utilisateur n'existe pas", HttpStatus.NOT_FOUND);
+        }
+    }
 }

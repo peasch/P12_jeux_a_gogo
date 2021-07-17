@@ -13,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/game")
 public class GameController {
+
     @Autowired
     private GameService service;
 
@@ -25,6 +26,7 @@ public class GameController {
     public GameDto getGameById(@PathVariable(name = "id")int id){
         return service.findById(id);
     }
+
     @PostMapping("/add")
     public ResponseEntity addGame(@RequestBody GameDto game)
     {

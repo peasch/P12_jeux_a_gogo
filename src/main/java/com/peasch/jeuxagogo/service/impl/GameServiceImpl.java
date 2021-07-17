@@ -45,10 +45,11 @@ public class GameServiceImpl implements GameService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public GameDto save(GameDto gameDto) {
         this.validationOfNewGame(gameDto);
+        gameDto.setAvailable(true);
         GameDto savedGame = mapper.fromGameToStrictDto(dao.save(mapper.fromDtoToGame(gameDto)));
         if (savedGame.getCopiesDto() != null) {
             for (CopyDto copy : savedGame.getCopiesDto()) {
-                copyService.save(copy);
+                copyService.save(copy, gameDto.getId());
             }
         }
 

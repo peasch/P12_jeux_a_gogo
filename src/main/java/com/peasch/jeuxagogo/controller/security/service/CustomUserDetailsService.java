@@ -23,8 +23,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired
     private UserService userService;
-    @Autowired
-    private RoleService roleService;
 
     @Autowired
     private PasswordEncoder bCryptPasswordEncoder;
@@ -40,7 +38,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
     }
 
-    public void saveUser(UserDto user) throws Exception { // Pour sauver un nouvel utilisateur
+    public void saveUser(UserDto user) { // Pour sauver un nouvel utilisateur
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userService.saveWithRole(user);
     }
