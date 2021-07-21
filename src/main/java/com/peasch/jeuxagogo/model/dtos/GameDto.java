@@ -26,9 +26,7 @@ public class GameDto implements Serializable {
     private String rulesLink;
     private Boolean french;
     private EditorDto editorDto;
-
     private GameStyleDto gameStyleDto;
-
     private Set<CopyDto> copiesDto;
 
 }

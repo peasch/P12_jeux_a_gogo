@@ -3,9 +3,12 @@ package com.peasch.jeuxagogo.service.impl;
 import com.peasch.jeuxagogo.model.Mappers.GameMapper;
 import com.peasch.jeuxagogo.model.dtos.CopyDto;
 import com.peasch.jeuxagogo.model.dtos.GameDto;
+import com.peasch.jeuxagogo.model.dtos.GameStyleDto;
+import com.peasch.jeuxagogo.model.entities.GameStyle;
 import com.peasch.jeuxagogo.repository.GameDao;
 import com.peasch.jeuxagogo.service.CopyService;
 import com.peasch.jeuxagogo.service.GameService;
+import com.peasch.jeuxagogo.service.GameStyleService;
 import com.peasch.jeuxagogo.service.misc.Text_FR;
 import org.mortbay.log.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +34,8 @@ public class GameServiceImpl implements GameService {
 
     @Autowired
     private CopyService copyService;
+    @Autowired
+    private GameStyleService gameStyleService;
 
 
     //--------------------------------Metier--------------------------------------------
@@ -44,8 +49,10 @@ public class GameServiceImpl implements GameService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public GameDto save(GameDto gameDto) {
+
         this.validationOfNewGame(gameDto);
         gameDto.setAvailable(true);
+
         GameDto savedGame = mapper.fromGameToStrictDto(dao.save(mapper.fromDtoToGame(gameDto)));
         if (savedGame.getCopiesDto() != null) {
             for (CopyDto copy : savedGame.getCopiesDto()) {

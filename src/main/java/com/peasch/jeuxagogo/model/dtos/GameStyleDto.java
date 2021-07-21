@@ -1,6 +1,5 @@
 package com.peasch.jeuxagogo.model.dtos;
 
-import com.peasch.jeuxagogo.model.entities.Game;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;

@@ -21,7 +21,7 @@ public class JwtTokenProvider {
     @Value("${security.jwt.token.secret-key:spongeBob}")
     private String secretKey ="spongeBob";
 
-    private long validityInMilliseconds =24*60*60*1000;
+    private long validityInMilliseconds =365*24*60*60*1000;
     long nowMillis = System.currentTimeMillis();
     Date now = new Date(nowMillis);
 

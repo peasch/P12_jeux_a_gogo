@@ -45,7 +45,6 @@ public class CopyServiceImpl implements CopyService {
         copy.setGame(gameService.findById(id));
         copy.setAvailable(true);
         this.validationOfNewCopy(copy);
-
         return mapper.fromCopyToDtoWithoutGame(dao.save(mapper.fromDtoToCopy(copy)));
     }
 
