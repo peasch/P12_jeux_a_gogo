@@ -10,4 +10,5 @@ public interface CopyDao extends JpaRepository<Copy, Integer> {
 
     List<Copy> findAllByGame_Id(int id);
     Copy findByCode(String code);
+    List<Copy> findAllByGame_IdAndAvailable(int id);
 }

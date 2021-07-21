@@ -144,6 +144,13 @@ public class UserServiceImpl implements UserService {
 
     //-------------------------------------Validations------------------------------------
 
+    public void validationOfBorrower(UserDto borrower) throws ValidationException{
+        if (!this.checkUsername(borrower.getUsername())) {
+            throw new ValidationException(Text_FR.INVALID_USER);
+
+        }
+    }
+
     private void validationOfUser(UserDto user) throws ValidationException {
         if (this.checkUsername(user.getUsername())) {
             throw new ValidationException(Text_FR.ALREADY_USED_USERNAME);

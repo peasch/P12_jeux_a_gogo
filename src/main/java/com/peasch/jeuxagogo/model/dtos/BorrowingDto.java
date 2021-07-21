@@ -15,9 +15,9 @@ import java.time.LocalDate;
 public class BorrowingDto {
     private int id;
     @NotNull
-    private User borrower;
+    private UserDto borrowerDto;
     @NotNull
-    private Copy copy;
+    private CopyDto copyDto;
     @NotNull
     private LocalDate date;
     private LocalDate returnDate;
