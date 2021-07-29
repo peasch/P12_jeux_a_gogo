@@ -9,6 +9,7 @@ public interface CopyService {
     List<CopyDto> getCopiesByGameId(int id);
     List<CopyDto> getAvailableCopiesByGameId(int id);
     CopyDto save(CopyDto copy,int id);
+    CopyDto update(CopyDto copy);
     void deleteAllByGameId(int id);
     CopyDto setUnavailable(CopyDto copyDto);
     CopyDto setAvailable(CopyDto copyDto);

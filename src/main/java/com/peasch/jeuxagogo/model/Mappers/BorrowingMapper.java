@@ -7,13 +7,16 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        uses = {UserMapper.class,CopyMapper.class})
 public interface BorrowingMapper {
 
+    @Mapping(target = "borrower",source = "borrowerDto")
+    @Mapping(target = "copy",source="copyDto")
     Borrowing fromDtoToBorrowing (BorrowingDto borrowingDto);
 
     @Named("toStrictDto")
-    @Mapping(target = "copyDto", source = "copy",qualifiedByName ="withoutGames" )
+    @Mapping(target = "copyDto", source = "copy",qualifiedByName ="withGames" )
     @Mapping(target = "borrowerDto",source = "borrower",qualifiedByName = "toDtoWithRoles")
     BorrowingDto fromBorrowingToDto (Borrowing borrowing);
 }

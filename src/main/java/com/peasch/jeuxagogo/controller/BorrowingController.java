@@ -7,10 +7,9 @@ import com.peasch.jeuxagogo.service.BorrowingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/borrowing")
@@ -19,11 +18,21 @@ public class BorrowingController {
     @Autowired
     private BorrowingService service;
 
-    @PostMapping("/add")
-    public ResponseEntity addBorrowing(@RequestBody UserDto user, GameDto game) {
+    @GetMapping("/all")
+    public List<BorrowingDto> getGames() {
+        return service.getBorrowings();
+    }
+
+    @GetMapping("/{username}")
+    public List<BorrowingDto> getBorrowingsOfUser(@PathVariable(name = "username") String username) {
+        return service.getBorrowingsByUsername(username);
+    }
+
+    @PostMapping("/add/{id}")
+    public ResponseEntity addBorrowing(@PathVariable(name = "id")Integer id,@RequestBody String username) {
 
         try{
-            return new ResponseEntity(service.add(user,game), HttpStatus.OK);
+            return new ResponseEntity(service.add(username,id), HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity(HttpStatus.FORBIDDEN);
 

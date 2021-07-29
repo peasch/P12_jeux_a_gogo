@@ -25,4 +25,10 @@ public interface GameMapper {
     @Mapping(target = "editorDto", source = "editor", qualifiedByName = "withoutGames")
     GameDto fromGameToStrictDto(Game game);
 
+    @Named("withoutDetails")
+    @Mapping(target = "gameStyleDto", ignore = true)
+    @Mapping(target = "copiesDto", ignore = true)
+    @Mapping(target = "editorDto", ignore = true)
+    GameDto fromGameTotDtoWithoutDetails(Game game);
+
 }

@@ -1,9 +1,12 @@
 package com.peasch.jeuxagogo.service;
 
 import com.peasch.jeuxagogo.model.dtos.BorrowingDto;
-import com.peasch.jeuxagogo.model.dtos.GameDto;
-import com.peasch.jeuxagogo.model.dtos.UserDto;
+
+
+import java.util.List;
 
 public interface BorrowingService {
-    BorrowingDto add(UserDto user, GameDto game);
+    List<BorrowingDto> getBorrowings();
+    List<BorrowingDto> getBorrowingsByUsername(String username);
+    BorrowingDto add(String username,int gameId);
 }

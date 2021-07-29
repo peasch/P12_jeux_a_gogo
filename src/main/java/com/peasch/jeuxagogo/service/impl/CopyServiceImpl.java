@@ -2,6 +2,7 @@ package com.peasch.jeuxagogo.service.impl;
 
 import com.peasch.jeuxagogo.model.Mappers.CopyMapper;
 import com.peasch.jeuxagogo.model.dtos.CopyDto;
+import com.peasch.jeuxagogo.model.dtos.GameDto;
 import com.peasch.jeuxagogo.repository.CopyDao;
 import com.peasch.jeuxagogo.service.CopyService;
 import com.peasch.jeuxagogo.service.GameService;
@@ -41,8 +42,9 @@ public class CopyServiceImpl implements CopyService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
-    public List<CopyDto> getAvailableCopiesByGameId(int id) {
-        return dao.findAllByGame_IdAndAvailable(id).stream().map(mapper::fromCopyToDtoWithoutGame).collect(Collectors.toList());
+    public List<CopyDto> getAvailableCopiesByGameId(int gameId) {
+        return dao.findAllByGameIdAndAvailable(gameId,true).stream().map(mapper::fromCopyToDtoWithGame).collect(Collectors.toList());
+
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -68,15 +70,15 @@ public class CopyServiceImpl implements CopyService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public CopyDto setUnavailable(CopyDto copyDto){
         CopyDto borrowedCopy = this.findById(copyDto.getId());
+        GameDto game = gameService.findById(borrowedCopy.getGame().getId());
         borrowedCopy.setAvailable(false);
-        CustomConstraintValidation<CopyDto> customConstraintValidation = new CustomConstraintValidation<>();
-        customConstraintValidation.validate(copyDto);
-        return mapper.fromCopyToDtoWithoutGame(dao.save(mapper.fromDtoToCopy(borrowedCopy)));
+        return mapper.fromCopyToDtoWithGame(dao.save(mapper.fromDtoToCopy(borrowedCopy)));
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public CopyDto setAvailable(CopyDto copyDto){
         CopyDto borrowedCopy = this.findById(copyDto.getId());
+        borrowedCopy.setGame(copyDto.getGame());
         borrowedCopy.setAvailable(true);
         CustomConstraintValidation<CopyDto> customConstraintValidation = new CustomConstraintValidation<>();
         customConstraintValidation.validate(copyDto);
@@ -95,6 +97,7 @@ public class CopyServiceImpl implements CopyService {
             this.delete(copy.getId());
         }
     }
+
 //--------------------------Findings ----------------------------------------------
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
@@ -104,7 +107,7 @@ public class CopyServiceImpl implements CopyService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public CopyDto findById(int id) {
-        return mapper.fromCopyToDtoWithoutGame(dao.findById(id).get());
+        return mapper.fromCopyToDtoWithGame(dao.findById(id).get());
     }
 
 

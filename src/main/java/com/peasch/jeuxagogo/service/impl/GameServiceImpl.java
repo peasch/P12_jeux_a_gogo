@@ -3,8 +3,6 @@ package com.peasch.jeuxagogo.service.impl;
 import com.peasch.jeuxagogo.model.Mappers.GameMapper;
 import com.peasch.jeuxagogo.model.dtos.CopyDto;
 import com.peasch.jeuxagogo.model.dtos.GameDto;
-import com.peasch.jeuxagogo.model.dtos.GameStyleDto;
-import com.peasch.jeuxagogo.model.entities.GameStyle;
 import com.peasch.jeuxagogo.repository.GameDao;
 import com.peasch.jeuxagogo.service.CopyService;
 import com.peasch.jeuxagogo.service.GameService;
@@ -16,9 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.Validation;
 import javax.validation.ValidationException;
-import javax.validation.Validator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,8 +36,20 @@ public class GameServiceImpl implements GameService {
 
     //--------------------------------Metier--------------------------------------------
 
-
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public List<GameDto> getGames() {
+        List<GameDto> games = dao.findAll().stream().map(mapper::fromGameToStrictDto)
+                .collect(Collectors.toList());
+        for (GameDto gameDto : games) {
+            int id= gameDto.getId();
+            if (copyService.getAvailableCopiesByGameId(id).isEmpty()) {
+                gameDto.setAvailable(false);
+                this.update(gameDto);
+            }else{
+                gameDto.setAvailable(true);
+                this.update(gameDto);
+            }
+        }
         return dao.findAll().stream().map(mapper::fromGameToStrictDto)
                 .collect(Collectors.toList());
     }
@@ -51,7 +59,7 @@ public class GameServiceImpl implements GameService {
     public GameDto save(GameDto gameDto) {
 
         this.validationOfNewGame(gameDto);
-        gameDto.setAvailable(true);
+        gameDto.setAvailable(false);
 
         GameDto savedGame = mapper.fromGameToStrictDto(dao.save(mapper.fromDtoToGame(gameDto)));
         if (savedGame.getCopiesDto() != null) {
@@ -76,9 +84,8 @@ public class GameServiceImpl implements GameService {
         game.setAgeMin(gameToUpdateDto.getAgeMin());
         game.setMinPlayers(gameToUpdateDto.getMinPlayers());
         game.setRulesLink(gameToUpdateDto.getRulesLink());
-
         CustomConstraintValidation<GameDto> customConstraintValidation = new CustomConstraintValidation<>();
-        customConstraintValidation.validate(gameToUpdateDto);
+        customConstraintValidation.validate(game);
 
         return mapper.fromGameToStrictDto(dao.save(mapper.fromDtoToGame(game)));
     }
@@ -88,6 +95,15 @@ public class GameServiceImpl implements GameService {
         copyService.deleteAllByGameId(id);
         dao.delete(mapper.fromDtoToGame(this.findById(id)));
     }
+
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public GameDto setUnavailable(GameDto gameDto) {
+        GameDto borrowedGame = this.findById(gameDto.getId());
+        borrowedGame.setAvailable(false);
+        return mapper.fromGameToStrictDto(dao.save(mapper.fromDtoToGame(borrowedGame)));
+    }
+
 
     //--------------------------Game findings -----------------------------------------
 
@@ -105,6 +121,13 @@ public class GameServiceImpl implements GameService {
 
     private boolean checkName(String name) {
         return this.findByName(name) != null;
+    }
+
+    private void checkAvailabilityOfGame() {
+        List<CopyDto> copies = copyService.getAll();
+        for (CopyDto copyDto : copies) {
+            copyDto.getGame().setAvailable(copyDto.getAvailable());
+        }
     }
 
     //--------------------------VALIDATIONS---------------------------------
