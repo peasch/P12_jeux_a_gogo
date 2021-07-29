@@ -14,7 +14,14 @@ import java.util.Set;
 @Table(name="game")
 @AllArgsConstructor @NoArgsConstructor
 @Getter @Setter
+@NamedQueries(
+        @NamedQuery(name = Game.QN.FIND_ALL_ORDERED,
+                    query="SELECT g from Game g order by g.name")
+)
 public class Game implements Serializable {
+    public static class QN{
+        public static final String FIND_ALL_ORDERED ="Game.findAllOrdered";
+    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;

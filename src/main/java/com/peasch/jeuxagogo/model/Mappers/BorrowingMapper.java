@@ -13,6 +13,7 @@ public interface BorrowingMapper {
 
     @Mapping(target = "borrower",source = "borrowerDto")
     @Mapping(target = "copy",source="copyDto")
+    @Mapping(target = "returned",source = "returned")
     Borrowing fromDtoToBorrowing (BorrowingDto borrowingDto);
 
     @Named("toStrictDto")

@@ -29,5 +29,7 @@ public class Borrowing {
     private LocalDate date;
     @Column(name = "return_date")
     private LocalDate returnDate;
+    @Column(name = "returned")
+    private Boolean returned;
 
 }

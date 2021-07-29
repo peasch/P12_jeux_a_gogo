@@ -3,6 +3,7 @@ package com.peasch.jeuxagogo.service.impl;
 import com.peasch.jeuxagogo.model.Mappers.GameMapper;
 import com.peasch.jeuxagogo.model.dtos.CopyDto;
 import com.peasch.jeuxagogo.model.dtos.GameDto;
+import com.peasch.jeuxagogo.model.entities.Game;
 import com.peasch.jeuxagogo.repository.GameDao;
 import com.peasch.jeuxagogo.service.CopyService;
 import com.peasch.jeuxagogo.service.GameService;
@@ -10,11 +11,14 @@ import com.peasch.jeuxagogo.service.GameStyleService;
 import com.peasch.jeuxagogo.service.misc.Text_FR;
 import org.mortbay.log.Log;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ValidationException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,6 +44,7 @@ public class GameServiceImpl implements GameService {
     public List<GameDto> getGames() {
         List<GameDto> games = dao.findAll().stream().map(mapper::fromGameToStrictDto)
                 .collect(Collectors.toList());
+
         for (GameDto gameDto : games) {
             int id= gameDto.getId();
             if (copyService.getAvailableCopiesByGameId(id).isEmpty()) {
@@ -50,8 +55,16 @@ public class GameServiceImpl implements GameService {
                 this.update(gameDto);
             }
         }
-        return dao.findAll().stream().map(mapper::fromGameToStrictDto)
+          List<GameDto> games2 =dao.findAll().stream().map(mapper::fromGameToStrictDto)
                 .collect(Collectors.toList());
+
+        Collections.sort(games2, new Comparator<GameDto>() {
+            @Override
+            public int compare(final GameDto o1,final GameDto o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+return games2;
     }
 
 

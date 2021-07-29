@@ -18,7 +18,8 @@ public class BorrowingDto {
     private UserDto borrowerDto;
     @NotNull
     private CopyDto copyDto;
-    @NotNull
+
     private LocalDate date;
     private LocalDate returnDate;
+    private Boolean returned;
 }
