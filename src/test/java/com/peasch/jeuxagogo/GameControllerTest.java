@@ -46,7 +46,7 @@ public class GameControllerTest {
 
     @Test
     void INCOMPLETE_GAME_ADDING() throws Exception {
-        GameDto game = GameDto.builder().name("bataille navale").available(true).build();
+        GameDto game = GameDto.builder().available(true).build();
         log.info(mapper.writeValueAsString(game));
         String jsonRequest = mapper.writeValueAsString(game);
 
@@ -70,9 +70,10 @@ public class GameControllerTest {
         gameToUpdate.setMinPlayers(3);
         CopyDto copy =CopyDto.builder().available(true).code("dfsgdfg").game(gameToUpdate).build();
 
-        mockMvc.perform(post("/copy/add").content(mapper.writeValueAsString(copy))
+        mockMvc.perform(post("/copy/add/"+gameToUpdate.getId()).content(mapper.writeValueAsString(copy))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk());
-
+        mockMvc.perform(post("/copy/add/"+gameToUpdate.getId()).content(mapper.writeValueAsString(copy))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isForbidden());
          mockMvc.perform(put("/game/update").content(mapper.writeValueAsString(gameToUpdate))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk()).andReturn();
 

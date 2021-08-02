@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.OrderBy;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Set;
 
@@ -16,7 +17,6 @@ public class GameDto implements Serializable {
 
     private int id;
     @NotNull
-    @OrderBy
     private String name;
 
     private Integer ageMin;
@@ -31,4 +31,5 @@ public class GameDto implements Serializable {
     private GameStyleDto gameStyleDto;
     private Set<CopyDto> copiesDto;
 
+    private String description;
 }

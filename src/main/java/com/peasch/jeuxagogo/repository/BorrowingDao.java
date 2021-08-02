@@ -12,6 +12,7 @@ public interface BorrowingDao extends JpaRepository<Borrowing, Integer> {
     List<Borrowing> findAllByBorrower_UsernameAndReturnDateIsNotNull(String username);
     List<Borrowing> findAllByBorrower_UsernameAndAndDateIsNull(String username);
     List<Borrowing> findAllByBorrower_UsernameAndReturnedIsTrue(String username);
+    List<Borrowing> findAllByBorrower_UsernameAndReturnedIsFalse(String username);
     List<Borrowing> findBorrowingsByReturnedIsFalse();
     List<Borrowing> findBorrowingsByReturnedIsTrue();
     List<Borrowing> findBorrowingsByDateIsNull();

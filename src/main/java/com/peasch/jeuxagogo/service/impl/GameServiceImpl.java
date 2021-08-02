@@ -116,7 +116,12 @@ return games2;
         borrowedGame.setAvailable(false);
         return mapper.fromGameToStrictDto(dao.save(mapper.fromDtoToGame(borrowedGame)));
     }
-
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public GameDto setAvailable(GameDto gameDto) {
+        GameDto borrowedGame = this.findById(gameDto.getId());
+        borrowedGame.setAvailable(true);
+        return mapper.fromGameToStrictDto(dao.save(mapper.fromDtoToGame(borrowedGame)));
+    }
 
     //--------------------------Game findings -----------------------------------------
 

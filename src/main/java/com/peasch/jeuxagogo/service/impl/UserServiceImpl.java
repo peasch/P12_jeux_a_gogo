@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public UserDto save(UserDto userDto) {
         this.validationOfUser(userDto);
-        dao.save(mapper.fromDtoToUser(userDto));
+        UserDto userDto2 = mapper.fromUserToDtoWithrole(dao.save(mapper.fromDtoToUser(userDto)));
         for (RoleDto role: userDto.getRolesDto()){
             Role roleUpdate = roleDao.findByRole(role.getRole());
             Set<User> users = roleUpdate.getUsers();
@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
             roleUpdate.setUsers(users);
             roleDao.save(roleUpdate);
         }
-        return userDto;
+        return userDto2;
     }
     public UserDto saveWithRole(UserDto userDto) {
         User user = mapper.fromDtoToUser(userDto);
@@ -94,6 +94,11 @@ public class UserServiceImpl implements UserService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void deleteUser(int id) {
         User user = dao.findUserById(id);
+        Set<Role> roles = user.getRoles();
+        for (Role role:roles){
+            roles.remove(role);
+        }
+        dao.save(user);
         dao.delete(user);
     }
 

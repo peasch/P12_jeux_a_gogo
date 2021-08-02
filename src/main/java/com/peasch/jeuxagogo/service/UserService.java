@@ -23,5 +23,6 @@ public interface UserService {
 
     UserDto findByUsernameWithRoles(String username);
 
+    UserDto update (UserDto userToUpdate);
     void validationOfBorrower(UserDto borrower);
 }

@@ -13,5 +13,6 @@ public interface GameService {
     GameDto save (GameDto gameDto) throws ValidationException;
     GameDto update(GameDto gameToUpdateDto)throws ValidationException;
     GameDto setUnavailable(GameDto gameDto);
+    GameDto setAvailable(GameDto gameDto);
     void delete(int id);
 }

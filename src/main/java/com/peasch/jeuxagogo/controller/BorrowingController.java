@@ -20,7 +20,6 @@ public class BorrowingController {
     private BorrowingService service;
 
     @GetMapping("/all")
-    @OrderBy("game.name")
     public List<BorrowingDto> getGames() {
         return service.getBorrowings();
     }
@@ -32,6 +31,10 @@ public class BorrowingController {
     @GetMapping("/returned/{username}")
     public List<BorrowingDto> getReturnedBorrowingsOfUser(@PathVariable(name = "username") String username) {
         return service.getReturnedBorrowingsByUsername(username);
+    }
+    @GetMapping("/unreturned/{username}")
+    public List<BorrowingDto> getUnreturnedBorrowingsOfUser(@PathVariable(name = "username") String username) {
+        return service.getUnreturnedBorrowingsByUsername(username);
     }
 
     @GetMapping("/pending/{username}")

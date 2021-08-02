@@ -14,6 +14,7 @@ public interface BorrowingService {
     List<BorrowingDto> getBorrowingsByUsername(String username);
     List<BorrowingDto> getReturnedBorrowingsByUsername(String username);
     List<BorrowingDto> getPendingBorrowingsByUsername(String username);
+    List<BorrowingDto> getUnreturnedBorrowingsByUsername(String username);
     BorrowingDto add(String username,int gameId);
     void delete(int id);
 

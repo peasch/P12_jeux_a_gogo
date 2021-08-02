@@ -21,9 +21,13 @@ public class UserController {
         return service.getUsers();
     }
 
-    @GetMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public void deleteUser(@PathVariable(name = "id") int id) {
         service.deleteUser(id);
+    }
+    @DeleteMapping("/delete/username/{username}")
+    public void deleteUser(@PathVariable(name = "username") String username) {
+        service.deleteUser(service.findByUsername(username).getId());
     }
 
     @GetMapping("/{id}")
@@ -42,8 +46,8 @@ public class UserController {
     }
 
     @PostMapping("/update")
-    public UserDto updateUser(UserDto userDto) throws Exception {
-        return service.save(userDto);
+    public UserDto updateUser(@RequestBody UserDto userDto) throws Exception {
+        return service.update(userDto);
     }
 
     @PostMapping("/add")

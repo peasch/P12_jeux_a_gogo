@@ -44,7 +44,8 @@ public class Game implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="fk_editor")
     private Editor editor;
-
+    @Column(name="description")
+    private String description;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_game_style")
     private GameStyle gameStyle;

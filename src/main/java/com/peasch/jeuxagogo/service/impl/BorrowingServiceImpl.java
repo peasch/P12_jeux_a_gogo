@@ -45,7 +45,6 @@ public class BorrowingServiceImpl implements BorrowingService {
     public BorrowingDto add(String username, int gameId) {
         BorrowingDto borrowingDto = new BorrowingDto();
         UserDto borrower = userService.findByUsername(username);
-
         borrowingDto.setBorrowerDto(borrower);
         borrowingDto.setCopyDto(copyService.getAvailableCopiesByGameId(gameId).get(0));
         copyService.setUnavailable(borrowingDto.getCopyDto());
@@ -67,6 +66,7 @@ public class BorrowingServiceImpl implements BorrowingService {
         BorrowingDto borrowingDto = mapper.fromBorrowingToDto(dao.findById(id).get());
         borrowingDto.setReturned(true);
         copyService.setAvailable(borrowingDto.getCopyDto());
+        gameService.setAvailable(borrowingDto.getCopyDto().getGame());
         return mapper.fromBorrowingToDto(dao.save(mapper.fromDtoToBorrowing(borrowingDto)));
     }
 
@@ -98,7 +98,10 @@ public class BorrowingServiceImpl implements BorrowingService {
     public List<BorrowingDto> getPendingBorrowingsByUsername(String username){
         return dao.findAllByBorrower_UsernameAndAndDateIsNull(username).stream().map(mapper::fromBorrowingToDto).collect(Collectors.toList());
     }
-
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+    public List<BorrowingDto> getUnreturnedBorrowingsByUsername(String username){
+        return dao.findAllByBorrower_UsernameAndReturnedIsFalse(username).stream().map(mapper::fromBorrowingToDto).collect(Collectors.toList());
+    }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void delete(int id) {

@@ -21,10 +21,10 @@ public class AdviceServiceimpl implements AdviceService {
     private AdviceDao dao;
 
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+   /* @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public List<AdviceDto> getAdvices(){
         return dao.findAll().stream().map(mapper::fromAdviceToDto).collect(Collectors.toList());
-    }
+    }*/
 
 
 }
