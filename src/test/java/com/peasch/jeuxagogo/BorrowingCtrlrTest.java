@@ -2,13 +2,12 @@ package com.peasch.jeuxagogo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.peasch.jeuxagogo.controller.JeuxagogoApplication;
-import com.peasch.jeuxagogo.model.dtos.BorrowingDto;
-import com.peasch.jeuxagogo.model.dtos.CopyDto;
-import com.peasch.jeuxagogo.model.dtos.GameDto;
-import com.peasch.jeuxagogo.model.dtos.UserDto;
+import com.peasch.jeuxagogo.controller.security.config.CustomUserSecurity;
+import com.peasch.jeuxagogo.model.dtos.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -47,16 +46,23 @@ public class BorrowingCtrlrTest {
     @Test
     void TEST_ADD_VALID_RETURN_AND_DELETE_BORROWING() throws Exception {
 
+        mockMvc.perform(get("/borrowing/return/1").content("admin")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isForbidden());
        MvcResult result = mockMvc.perform(post("/borrowing/add/1").content("admin")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk()).andReturn();
         BorrowingDto borrowingDto = mapper.readValue(result.getResponse().getContentAsString(),BorrowingDto.class);
         int id = borrowingDto.getId();
+
         mockMvc.perform(get("/borrowing/valid/" + id).content("admin")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk());
+        mockMvc.perform(post("/borrowing/add/1").content("admin")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isForbidden());
         mockMvc.perform(get("/borrowing/return/" + id).content("admin")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk());
         mockMvc.perform(delete("/borrowing/delete/" + id).content("admin")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk());
+        mockMvc.perform(delete("/borrowing/delete/1000").content("admin")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isForbidden());
     }
 
     @Test
@@ -76,4 +82,6 @@ public class BorrowingCtrlrTest {
         mockMvc.perform(get("/borrowing/allPending")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk());
     }
+
+
 }

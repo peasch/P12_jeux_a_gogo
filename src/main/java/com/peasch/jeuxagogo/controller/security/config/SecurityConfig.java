@@ -31,7 +31,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-    private static final String EMPLOYEE = "EMPLOYEE";
     private static final String USER = "USER";
     private static final String ADMIN = "ADMIN";
     private static final String MEMBER = "MEMBER";
