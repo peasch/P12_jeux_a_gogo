@@ -70,18 +70,10 @@ return games2;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public GameDto save(GameDto gameDto) {
-
         this.validationOfNewGame(gameDto);
         gameDto.setAvailable(false);
+        return mapper.fromGameToStrictDto(dao.save(mapper.fromDtoToGame(gameDto)));
 
-        GameDto savedGame = mapper.fromGameToStrictDto(dao.save(mapper.fromDtoToGame(gameDto)));
-        if (savedGame.getCopiesDto() != null) {
-            for (CopyDto copy : savedGame.getCopiesDto()) {
-                copyService.save(copy, gameDto.getId());
-            }
-        }
-
-        return savedGame;
     }
 
 
@@ -141,12 +133,7 @@ return games2;
         return this.findByName(name) != null;
     }
 
-    private void checkAvailabilityOfGame() {
-        List<CopyDto> copies = copyService.getAll();
-        for (CopyDto copyDto : copies) {
-            copyDto.getGame().setAvailable(copyDto.getAvailable());
-        }
-    }
+
 
     //--------------------------VALIDATIONS---------------------------------
 

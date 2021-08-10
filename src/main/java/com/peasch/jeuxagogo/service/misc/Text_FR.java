@@ -11,4 +11,5 @@ public class Text_FR {
     public static final String INVALID_USER="Impossible de valider les informations de l'utilisateur : ";
     public static final String INVALID_GAME="Impossible de valider les informations du jeu : ";
     public static final String ALREADY_USED_COPY_CODE="Ce code est déjà utilisé";
+    public static final String ALREADY_COMMENTED_BY_USER="L'utilisateur a déjà commenté ce jeu";
 }

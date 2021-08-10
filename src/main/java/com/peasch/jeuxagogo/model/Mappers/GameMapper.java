@@ -16,6 +16,7 @@ public interface GameMapper {
     @Mapping(target = "editor", source = "editorDto")
     @Mapping(target = "gameStyle", source = "gameStyleDto")
     @Mapping(target = "copies", source = "copiesDto")
+    @Mapping(target = "coverLink",source = "coverLink")
     Game fromDtoToGame(GameDto gameDto);
 
 
@@ -23,6 +24,7 @@ public interface GameMapper {
     @Mapping(target = "gameStyleDto", source = "gameStyle", qualifiedByName = "withoutGames")
     @Mapping(target = "copiesDto", source = "copies", qualifiedByName = "withoutGames")
     @Mapping(target = "editorDto", source = "editor", qualifiedByName = "withoutGames")
+    @Mapping(target = "coverLink",source = "coverLink")
     GameDto fromGameToStrictDto(Game game);
 
     @Named("withoutDetails")

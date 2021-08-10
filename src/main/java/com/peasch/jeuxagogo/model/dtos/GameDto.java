@@ -2,9 +2,7 @@ package com.peasch.jeuxagogo.model.dtos;
 
 import lombok.*;
 
-import javax.persistence.OrderBy;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Set;
 
@@ -30,6 +28,6 @@ public class GameDto implements Serializable {
     private EditorDto editorDto;
     private GameStyleDto gameStyleDto;
     private Set<CopyDto> copiesDto;
-
+    private String coverLink;
     private String description;
 }

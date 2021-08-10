@@ -64,7 +64,8 @@ public class GameControllerTest {
 
         MvcResult result = mockMvc.perform(post("/game/add").content(mapper.writeValueAsString(game))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk()).andReturn();
-
+        mockMvc.perform(post("/game/add").content(mapper.writeValueAsString(game))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isForbidden());
         GameDto gameToUpdate = mapper.readValue(result.getResponse().getContentAsString(), GameDto.class);
 
         gameToUpdate.setMinPlayers(3);

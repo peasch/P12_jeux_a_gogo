@@ -24,7 +24,8 @@ public class GameController {
 
     @GetMapping("/{id}")
     public GameDto getGameById(@PathVariable(name = "id")int id){
-        return service.findById(id);
+        GameDto gameDto = service.findById(id);
+        return gameDto;
     }
 
     @PostMapping("/add")
