@@ -89,8 +89,10 @@ return games2;
         game.setAgeMin(gameToUpdateDto.getAgeMin());
         game.setMinPlayers(gameToUpdateDto.getMinPlayers());
         game.setRulesLink(gameToUpdateDto.getRulesLink());
-        CustomConstraintValidation<GameDto> customConstraintValidation = new CustomConstraintValidation<>();
-        customConstraintValidation.validate(game);
+        game.setDescription(gameToUpdateDto.getDescription());
+        game.setCoverLink(gameToUpdateDto.getCoverLink());
+        /*CustomConstraintValidation<GameDto> customConstraintValidation = new CustomConstraintValidation<>();
+        customConstraintValidation.validate(game);*/
 
         return mapper.fromGameToStrictDto(dao.save(mapper.fromDtoToGame(game)));
     }

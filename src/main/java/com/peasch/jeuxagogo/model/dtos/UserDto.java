@@ -32,6 +32,7 @@ public class UserDto implements Serializable {
     private String password;
     @Past @NotNull
     private LocalDate birthDate;
+    private boolean free;
 
     private LocalDate adhesionDate;
     private Set<RoleDto> rolesDto;

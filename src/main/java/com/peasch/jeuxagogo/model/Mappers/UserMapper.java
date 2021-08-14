@@ -10,7 +10,7 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE,
 uses = {RoleMapper.class})
 public interface UserMapper {
-
+@Mapping(target = "roles",source = "rolesDto")
     User fromDtoToUser(UserDto userDto);
 
     @Named("toStrictDto")

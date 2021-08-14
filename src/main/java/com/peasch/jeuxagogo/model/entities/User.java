@@ -42,6 +42,9 @@ public class User implements Serializable {
     @Column(name = "adhesion_date")
     private LocalDate adhesionDate;
 
+    @Column(name = "free")
+    private boolean free;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_has_role",

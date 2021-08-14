@@ -44,7 +44,7 @@ public class BorrowingServiceImpl implements BorrowingService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public BorrowingDto add(String username, int gameId) {
         BorrowingDto borrowingDto = new BorrowingDto();
-        UserDto borrower = userService.findByUsername(username);
+        UserDto borrower = userService.findByUsernameWithRoles(username);
         borrowingDto.setBorrowerDto(borrower);
         borrowingDto.setCopyDto(copyService.getAvailableCopiesByGameId(gameId).get(0));
         copyService.setUnavailable(borrowingDto.getCopyDto());
