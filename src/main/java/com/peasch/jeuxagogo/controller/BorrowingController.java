@@ -66,6 +66,16 @@ public class BorrowingController {
 
         }
     }
+    @PostMapping("/addFromWL/{id}")
+    public ResponseEntity addBorrowingFromWaitList(@PathVariable(name = "id")Integer id,@RequestBody String username) {
+
+        try{
+            return new ResponseEntity(service.addfromWaitList(username,id), HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+
+        }
+    }
     @GetMapping("/return/{id}")
     public ResponseEntity returnBorrowing(@PathVariable(name = "id")int id){
         try{

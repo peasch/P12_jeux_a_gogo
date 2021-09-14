@@ -137,7 +137,11 @@
             <artifactId>jjwt</artifactId>
             <version>0.9.1</version>
         </dependency>
-
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>javax.mail-api</artifactId>
+            <version>1.6.2</version>
+        </dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -147,6 +151,12 @@
             <groupId>com.googlecode.jmapper-framework</groupId>
             <artifactId>jmapper-core</artifactId>
             <version>1.6.1.CR2</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.14.2</version>
         </dependency>
 
 <!--       Security_________________________________________-->

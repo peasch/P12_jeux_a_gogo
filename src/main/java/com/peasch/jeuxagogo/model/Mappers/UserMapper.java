@@ -8,9 +8,10 @@ import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE,
-uses = {RoleMapper.class})
+        uses = {RoleMapper.class})
 public interface UserMapper {
-@Mapping(target = "roles",source = "rolesDto")
+
+    @Mapping(target = "roles", source = "rolesDto")
     User fromDtoToUser(UserDto userDto);
 
     @Named("toStrictDto")
@@ -23,7 +24,7 @@ public interface UserMapper {
     UserDto fromUserToStrictDto(User user);
 
     @Named("toDtoWithRoles")
-    @Mapping(target = "rolesDto", source = "roles",qualifiedByName = "toStrictDto")
+    @Mapping(target = "rolesDto", source = "roles", qualifiedByName = "toStrictDto")
     @Mapping(target = "godfather", ignore = true)
     @Mapping(target = "godsons", ignore = true)
     @Mapping(target = "askedFriends", ignore = true)

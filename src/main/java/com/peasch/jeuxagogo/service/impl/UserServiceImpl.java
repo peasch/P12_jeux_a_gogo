@@ -1,5 +1,7 @@
 package com.peasch.jeuxagogo.service.impl;
 
+import com.peasch.jeuxagogo.controller.security.service.CustomUserDetailsService;
+import com.peasch.jeuxagogo.mailing.EmailService;
 import com.peasch.jeuxagogo.model.Mappers.RoleMapper;
 import com.peasch.jeuxagogo.model.Mappers.UserMapper;
 import com.peasch.jeuxagogo.model.dtos.RoleDto;
@@ -12,12 +14,17 @@ import com.peasch.jeuxagogo.service.BorrowingService;
 import com.peasch.jeuxagogo.service.RoleService;
 import com.peasch.jeuxagogo.service.UserService;
 import com.peasch.jeuxagogo.service.misc.Text_FR;
+import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.MessagingException;
 import javax.validation.ValidationException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,6 +32,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
+    private final static String RESETMAILSUBJECT = "Réinitialiser le mot de passe Jeux à gogo.";
+    private final static String RESETMAILMESSAGE = "Cliquez sur le lien pour réinitialiser votre mot de passe : " +
+            "http://localhost:4200/resetPassword?token=%s";
 
     @Autowired
     private UserMapper mapper;
@@ -39,12 +49,17 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private RoleService roleService;
+    @Autowired
+    private EmailService emailService;
+    @Autowired
+    private PasswordEncoder bCryptPasswordEncoder;
 
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW,readOnly = true)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public List<UserDto> getUsers() {
         return dao.findAll().stream().map(mapper::fromUserToDtoWithrole)
-                .collect(Collectors.toList());
+                .sorted(Comparator.comparing(o -> o.getName().toLowerCase())).collect(Collectors.toList());
+
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -52,9 +67,10 @@ public class UserServiceImpl implements UserService {
         return this.setUserFree(username);
 
     }
+
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    UserDto setUserFree(String username){
-        UserDto user= this.findByUsername(username);
+    UserDto setUserFree(String username) {
+        UserDto user = this.findByUsername(username);
         boolean free = borrowingService.getUnreturnedBorrowingsByUsername(username).isEmpty();
         user.setFree(free);
         return mapper.fromUserToDtoWithrole(dao.save(mapper.fromDtoToUser(user)));
@@ -91,6 +107,25 @@ public class UserServiceImpl implements UserService {
         return mapper.fromUserToDtoWithrole(user);
     }
 
+    public UserDto saveWithRoleWithNewPassword(UserDto userDto) {
+        this.validationOfUser(userDto);
+        User user = mapper.fromDtoToUser(userDto);
+        user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
+        Set<RoleDto> rolesDto = userDto.getRolesDto();
+        Set<Role> roles = rolesDto.stream().map(roleMapper::fromDtoToRole).collect(Collectors.toSet());
+        user.setRoles(roles);
+        dao.save(user);
+        for (Role role : roles) {
+            Role roleUpdate = roleDao.findByRole(role.getRole());
+            Set<User> users = roleUpdate.getUsers();
+            users.add(user);
+            roleUpdate.setUsers(users);
+            roleDao.save(roleUpdate);
+        }
+
+        return mapper.fromUserToDtoWithrole(user);
+    }
+
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public UserDto update(UserDto userToUpdate) {
         UserDto user = this.findByIdWithRole(userToUpdate.getId());
@@ -102,6 +137,7 @@ public class UserServiceImpl implements UserService {
         user.setUsername(userToUpdate.getUsername());
         user.setAdvices(userToUpdate.getAdvices());
         user.setRolesDto(userToUpdate.getRolesDto());
+        user.setResetPassword(userToUpdate.getResetPassword());
         CustomConstraintValidation<UserDto> customConstraintValidation = new CustomConstraintValidation<>();
         customConstraintValidation.validate(user);
 
@@ -112,12 +148,12 @@ public class UserServiceImpl implements UserService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void deleteUser(int id) throws Exception {
         User user = dao.findUserById(id);
-            Set<Role> roles = user.getRoles();
-            for (Role role : roles) {
-                roles.remove(role);
-            }
-            dao.save(user);
-            dao.delete(user);
+        Set<Role> roles = user.getRoles();
+        for (Role role : roles) {
+            roles.remove(role);
+        }
+        dao.save(user);
+        dao.delete(user);
     }
 
 
@@ -135,7 +171,7 @@ public class UserServiceImpl implements UserService {
         UserDto userDto = mapper.fromUserToDtoWithrole(dao.findUserById(user.getId()));
         Set<RoleDto> roles = userDto.getRolesDto();
         RoleDto roleToRemove = roleService.findById(id);
-        if (roles.contains(roleToRemove)){
+        if (roles.contains(roleToRemove)) {
             roles.remove(roleToRemove);
         }
 
@@ -145,12 +181,37 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void sendMailToReset(String username) throws MessagingException {
+        var user = this.findByUsername(username);
+        var resetPassword = RandomStringUtils.randomAlphabetic(12);
+        user.setResetPassword(resetPassword);
+        dao.save(mapper.fromDtoToUser(user));
+        emailService.send(user.getEmail(), RESETMAILSUBJECT, String.format(RESETMAILMESSAGE, resetPassword));
+
+    }
+
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public UserDto resetPassword(String token, String password) {
+        var userDto = this.findByToken(token);
+        userDto.setPassword(bCryptPasswordEncoder.encode(password));
+        userDto.setResetPassword(null);
+        return mapper.fromUserToDtoWithrole(dao.save(mapper.fromDtoToUser(userDto)));
+
+    }
+
 
     //------------------ FINDING USER -----------------------------------
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public UserDto findById(int id) {
         return mapper.fromUserToDtoWithrole(dao.findUserById(id));
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public UserDto findByToken(String token) {
+        return mapper.fromUserToDtoWithrole(dao.findUserByResetPassword(token));
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

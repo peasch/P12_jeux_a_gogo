@@ -44,6 +44,7 @@ public class AdviceCtrlrTest {
         mockMvc.perform(get("/advice/all")).andExpect(status().isOk());
 
     }
+
     @Test
     void TEST_GET_ADVICES_BY_GAME_ID() throws Exception {
         mockMvc.perform(get("/advice/all/1")).andExpect(status().isOk());
@@ -56,12 +57,12 @@ public class AdviceCtrlrTest {
         MvcResult userResult = mockMvc.perform(get("/user/1")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk()).andReturn();
         UserDto user = mapper.readValue(userResult.getResponse().getContentAsString(), UserDto.class);
-        MvcResult gameResult = mockMvc.perform(get("/game/1")
+        MvcResult gameResult = mockMvc.perform(get("/game/id/1")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk()).andReturn();
-        GameDto game = mapper.readValue(gameResult.getResponse().getContentAsString(),GameDto.class);
+        GameDto game = mapper.readValue(gameResult.getResponse().getContentAsString(), GameDto.class);
         AdviceDto adviceDto = AdviceDto.builder().game(game).user(user).rating(5).commentary("trop génial").build();
-       String jsonRequest = mapper.writeValueAsString(adviceDto);
-        MvcResult result = mockMvc.perform(post("/advice/add").content(jsonRequest)
+        String jsonRequest = mapper.writeValueAsString(adviceDto);
+        MvcResult result = mockMvc.perform(post("/advice/add/" + game.getId()).content(jsonRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk()).andReturn();
 
 
@@ -75,17 +76,17 @@ public class AdviceCtrlrTest {
         MvcResult result2 = mockMvc.perform(post("/advice/add").content(jsonRequest2)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk()).andReturn();
 
-        adviceDto=mapper.readValue(result.getResponse().getContentAsString(),AdviceDto.class);
-        adviceDto2=mapper.readValue(result2.getResponse().getContentAsString(),AdviceDto.class);
+        adviceDto = mapper.readValue(result.getResponse().getContentAsString(), AdviceDto.class);
+        adviceDto2 = mapper.readValue(result2.getResponse().getContentAsString(), AdviceDto.class);
 
-        MvcResult intResult= mockMvc.perform(get("/advice/rating/1")
+        MvcResult intResult = mockMvc.perform(get("/advice/rating/1")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk()).andReturn();
-        System.out.println(mapper.readValue(intResult.getResponse().getContentAsString(),float.class));
+        System.out.println(mapper.readValue(intResult.getResponse().getContentAsString(), float.class));
         mockMvc.perform(post("/advice/add").content(jsonRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isForbidden());
-        mockMvc.perform(delete("/advice/delete/"+adviceDto.getId()).content(jsonRequest)
+        mockMvc.perform(delete("/advice/delete/" + adviceDto.getId()).content(jsonRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk());
-        mockMvc.perform(delete("/advice/delete/"+adviceDto2.getId()).content(jsonRequest)
+        mockMvc.perform(delete("/advice/delete/" + adviceDto2.getId()).content(jsonRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk());
     }
 }

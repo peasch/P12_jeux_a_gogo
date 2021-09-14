@@ -1,5 +1,6 @@
 package com.peasch.jeuxagogo.controller;
 
+import com.peasch.jeuxagogo.model.dtos.NewPassword;
 import com.peasch.jeuxagogo.model.dtos.RoleDto;
 import com.peasch.jeuxagogo.model.dtos.UserDto;
 import com.peasch.jeuxagogo.service.UserService;
@@ -8,11 +9,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import java.util.List;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
+
     @Autowired
     private UserService service;
 
@@ -27,8 +30,8 @@ public class UserController {
         try {
             service.deleteUser(id);
             return new ResponseEntity(HttpStatus.OK);
-        } catch (Exception e){
-            return new ResponseEntity("l'utilisateur a encore des emprunts en cours",HttpStatus.FORBIDDEN);
+        } catch (Exception e) {
+            return new ResponseEntity("l'utilisateur a encore des emprunts en cours", HttpStatus.FORBIDDEN);
         }
 
     }
@@ -38,8 +41,8 @@ public class UserController {
         try {
             service.deleteUser(service.findByUsername(username).getId());
             return new ResponseEntity(HttpStatus.OK);
-        } catch (Exception e){
-            return new ResponseEntity("l'utilisateur a encore des emprunts en cours",HttpStatus.FORBIDDEN);
+        } catch (Exception e) {
+            return new ResponseEntity("l'utilisateur a encore des emprunts en cours", HttpStatus.FORBIDDEN);
         }
     }
 
@@ -52,7 +55,7 @@ public class UserController {
     @GetMapping("/username/{username}")
     public ResponseEntity findByUsername(@PathVariable(name = "username") String username) {
         if (service.findByUsername(username) != null) {
-            return new ResponseEntity(service.getUserByUsername(username),HttpStatus.OK );
+            return new ResponseEntity(service.getUserByUsername(username), HttpStatus.OK);
         } else {
             return new ResponseEntity("cet utilisateur n'existe pas", HttpStatus.NOT_FOUND);
         }
@@ -73,10 +76,11 @@ public class UserController {
 
         }
     }
+
     @PutMapping("/addRole/{id}")
     public ResponseEntity addRoleToUser(@PathVariable(name = "id") int id, @RequestBody RoleDto roleDto) {
         try {
-            return new ResponseEntity(service.addRoleToUser(roleDto,id), HttpStatus.OK);
+            return new ResponseEntity(service.addRoleToUser(roleDto, id), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
 
@@ -86,18 +90,35 @@ public class UserController {
     @PutMapping("/removeRole/{id}")
     public ResponseEntity removeRoleToUser(@PathVariable(name = "id") int id, @RequestBody UserDto userDto) {
         try {
-            return new ResponseEntity(service.removeRoleOfUser(userDto,id), HttpStatus.OK);
+            return new ResponseEntity(service.removeRoleOfUser(userDto, id), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
 
         }
     }
+
     @GetMapping("/userWithRoles/{username}")
-    public ResponseEntity getRolesOfUser(@PathVariable(name = "username")String username){
+    public ResponseEntity getRolesOfUser(@PathVariable(name = "username") String username) {
         if (service.findByUsername(username) != null) {
-            return new ResponseEntity(service.findByUsernameWithRoles(username),HttpStatus.OK);
+            return new ResponseEntity(service.findByUsernameWithRoles(username), HttpStatus.OK);
         } else {
             return new ResponseEntity("cet utilisateur n'existe pas", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/sendResetMail")
+    public void sendMailToReset(@RequestBody UserDto userDto) throws MessagingException {
+        service.sendMailToReset(userDto.getUsername());
+    }
+
+    @PostMapping("/resetPassword")
+    public ResponseEntity resetPassword(@RequestParam String token, @RequestBody NewPassword newPassword) {
+
+        try {
+            return new ResponseEntity(service.resetPassword(token, newPassword.getPassword()), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+
         }
     }
 }

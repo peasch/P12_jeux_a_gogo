@@ -19,5 +19,6 @@ public interface BorrowingMapper {
     @Named("toStrictDto")
     @Mapping(target = "copyDto", source = "copy",qualifiedByName ="withGames" )
     @Mapping(target = "borrowerDto",source = "borrower",qualifiedByName = "toDtoWithRoles")
+    @Mapping(target = "returned",source = "returned")
     BorrowingDto fromBorrowingToDto (Borrowing borrowing);
 }

@@ -1,17 +1,13 @@
 package com.peasch.jeuxagogo.service.impl;
 
 import com.peasch.jeuxagogo.model.Mappers.GameMapper;
-import com.peasch.jeuxagogo.model.dtos.CopyDto;
 import com.peasch.jeuxagogo.model.dtos.GameDto;
 import com.peasch.jeuxagogo.model.entities.Game;
 import com.peasch.jeuxagogo.repository.GameDao;
-import com.peasch.jeuxagogo.service.CopyService;
-import com.peasch.jeuxagogo.service.GameService;
-import com.peasch.jeuxagogo.service.GameStyleService;
+import com.peasch.jeuxagogo.service.*;
 import com.peasch.jeuxagogo.service.misc.Text_FR;
 import org.mortbay.log.Log;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +22,7 @@ import java.util.stream.Collectors;
 
 public class GameServiceImpl implements GameService {
 
+
     @Autowired
     private GameMapper mapper;
 
@@ -35,7 +32,11 @@ public class GameServiceImpl implements GameService {
     @Autowired
     private CopyService copyService;
     @Autowired
-    private GameStyleService gameStyleService;
+    private AdviceService adviceService;
+    @Autowired
+    private BorrowingService borrowingService;
+    @Autowired
+    private WaitListService waitListService;
 
 
     //--------------------------------Metier--------------------------------------------
@@ -44,27 +45,85 @@ public class GameServiceImpl implements GameService {
     public List<GameDto> getGames() {
         List<GameDto> games = dao.findAll().stream().map(mapper::fromGameToStrictDto)
                 .collect(Collectors.toList());
-
         for (GameDto gameDto : games) {
-            int id= gameDto.getId();
+            this.setAverageRating(gameDto);
+
+        }
+        List<GameDto> games3 = dao.findAll().stream().map(mapper::fromGameToStrictDto)
+                .collect(Collectors.toList());
+        for (GameDto gameDto : games3) {
+            int id = gameDto.getId();
             if (copyService.getAvailableCopiesByGameId(id).isEmpty()) {
                 gameDto.setAvailable(false);
                 this.update(gameDto);
-            }else{
-                gameDto.setAvailable(true);
+            } else {
+                if (waitListService.getWaitlistByGameId(gameDto.getId()).isEmpty()) {
+                    gameDto.setAvailable(true);
+                } else {
+                    gameDto.setAvailable(false);
+                }
                 this.update(gameDto);
             }
         }
-          List<GameDto> games2 =dao.findAll().stream().map(mapper::fromGameToStrictDto)
+        List<GameDto> games2 = dao.findAll().stream().map(mapper::fromGameToStrictDto)
                 .collect(Collectors.toList());
 
         Collections.sort(games2, new Comparator<GameDto>() {
             @Override
-            public int compare(final GameDto o1,final GameDto o2) {
+            public int compare(final GameDto o1, final GameDto o2) {
                 return o1.getName().compareTo(o2.getName());
             }
         });
-return games2;
+        return games2;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+    public List<GameDto> getGamesByRating() {
+        return dao.findAll().stream().map(mapper::fromGameToStrictDto)
+                .sorted(Comparator.comparing(GameDto::getRating))
+                .collect(Collectors.toList());
+
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+    public List<Integer> getGamesByAgeMin() {
+        List<Integer> games = dao.findDistinctByAgeMin();
+        Collections.sort(games);
+        return games;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+    public List<Integer> getGamesByMinPlayers() {
+        List<Integer> games = dao.findDistinctByMinPlayers();
+        Collections.sort(games);
+        return games;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+    public List<GameDto> getGamesByName(String name) {
+        return dao.findGamesByNameLike("%" + name + "%").stream().map(mapper::fromGameToStrictDto).sorted(Comparator.comparing(GameDto::getName))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+    public List<GameDto> getGamesByStyleId(int id) {
+        return dao.findGamesByGameStyle_Id(id).stream().map(mapper::fromGameToStrictDto)
+                .sorted(Comparator.comparing(GameDto::getName)).collect(Collectors.toList());
+
+    }
+
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+    public List<GameDto> getGamesByAgeMinResearched(int ageMin) {
+        return dao.findGamesByAgeMinEquals(ageMin).stream().map(mapper::fromGameToStrictDto)
+                .sorted(Comparator.comparing(GameDto::getName))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+    public List<GameDto> getGamesByPopularity() {
+        return dao.findAll().stream().map(mapper::fromGameToStrictDto)
+                .sorted(Comparator.comparing(GameDto::getBorrowingQuantity)).collect(Collectors.toList());
     }
 
 
@@ -72,6 +131,8 @@ return games2;
     public GameDto save(GameDto gameDto) {
         this.validationOfNewGame(gameDto);
         gameDto.setAvailable(false);
+        gameDto.setBorrowingQuantity(0);
+        gameDto.setRating(-1.0f);
         return mapper.fromGameToStrictDto(dao.save(mapper.fromDtoToGame(gameDto)));
 
     }
@@ -91,6 +152,8 @@ return games2;
         game.setRulesLink(gameToUpdateDto.getRulesLink());
         game.setDescription(gameToUpdateDto.getDescription());
         game.setCoverLink(gameToUpdateDto.getCoverLink());
+        game.setRating(gameToUpdateDto.getRating());
+        game.setBorrowingQuantity(gameToUpdateDto.getBorrowingQuantity());
         /*CustomConstraintValidation<GameDto> customConstraintValidation = new CustomConstraintValidation<>();
         customConstraintValidation.validate(game);*/
 
@@ -110,12 +173,25 @@ return games2;
         borrowedGame.setAvailable(false);
         return mapper.fromGameToStrictDto(dao.save(mapper.fromDtoToGame(borrowedGame)));
     }
+
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public GameDto setAvailable(GameDto gameDto) {
-        GameDto borrowedGame = this.findById(gameDto.getId());
-        borrowedGame.setAvailable(true);
-        return mapper.fromGameToStrictDto(dao.save(mapper.fromDtoToGame(borrowedGame)));
+        GameDto game = this.findById(gameDto.getId());
+        game.setAvailable(waitListService.getWaitlistByGameId(game.getId()).isEmpty());
+        return mapper.fromGameToStrictDto(dao.save(mapper.fromDtoToGame(game)));
     }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public GameDto setAverageRating(GameDto gameDto) {
+        GameDto gameToRate = this.findById(gameDto.getId());
+        gameToRate.setBorrowingQuantity(borrowingService.getAllBorrowingsByGameId(gameDto.getId()).size());
+        if (!adviceService.getAllAdviceById(gameDto.getId()).isEmpty()) {
+            gameToRate.setRating(adviceService.getRatingOfGameId(gameToRate.getId()));
+            return mapper.fromGameToStrictDto(dao.save(mapper.fromDtoToGame(gameToRate)));
+        }
+        return gameDto;
+    }
+
 
     //--------------------------Game findings -----------------------------------------
 
@@ -134,7 +210,6 @@ return games2;
     private boolean checkName(String name) {
         return this.findByName(name) != null;
     }
-
 
 
     //--------------------------VALIDATIONS---------------------------------

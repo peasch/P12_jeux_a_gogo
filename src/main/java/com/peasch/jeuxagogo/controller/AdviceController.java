@@ -36,7 +36,7 @@ public class AdviceController {
         }
     }
     @GetMapping("/rating/{id}")
-    public float getRAtingOfGameId(@PathVariable(name = "id")int id){
+    public Float getRAtingOfGameId(@PathVariable(name = "id")int id){
         return service.getRatingOfGameId(id);
 
     }

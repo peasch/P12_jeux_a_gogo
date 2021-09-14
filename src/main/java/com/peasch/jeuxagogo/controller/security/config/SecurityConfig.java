@@ -26,12 +26,11 @@ import javax.servlet.http.HttpServletResponse;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private CustomUserDetailsService uds;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    /*@Autowired
+    private PasswordEncoder passwordEncoder;*/
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-    private static final String EMPLOYEE = "EMPLOYEE";
     private static final String USER = "USER";
     private static final String ADMIN = "ADMIN";
     private static final String MEMBER = "MEMBER";
@@ -39,7 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(uds).passwordEncoder(passwordEncoder);
+        auth.userDetailsService(uds).passwordEncoder(this.passwordEncoder());
     }
 
     @Override
@@ -48,10 +47,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 .antMatchers("/auth/**").permitAll()
-                .antMatchers("/user/**").hasAnyRole(USER, ADMIN,MODERATOR)
-                .antMatchers("/game/add").hasAnyRole(ADMIN,MODERATOR)
-                .antMatchers("/copy/**").hasAnyRole(ADMIN,MODERATOR)
-                .antMatchers("/game/all").permitAll()
+                .antMatchers("/user/sendResetMail").permitAll()
+                .antMatchers("/user/resetPassword").permitAll()
+                .antMatchers("/game/all/**").permitAll()
+                .antMatchers("/game/id/**").permitAll()
+                .antMatchers("/style/**").permitAll()
+                .antMatchers("/user/**").hasAnyRole(USER, ADMIN, MODERATOR, MEMBER)
+                .antMatchers("/game/add").hasAnyRole(ADMIN, MODERATOR)
+                .antMatchers("/copy/**").hasAnyRole(ADMIN, MODERATOR)
+                .antMatchers("/waitlist/**").hasAnyRole(ADMIN, MODERATOR, MEMBER, USER)
                 .anyRequest().authenticated()
                 .and().exceptionHandling().authenticationEntryPoint(unauthorizedEntryPoint()).and()
                 .apply(new JwtConfigurer(jwtTokenProvider));
@@ -97,7 +101,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedOrigins("*")
-                        .allowedMethods("POST","GET","PUT","DELETE","OPTIONS");
+                        .allowedMethods("POST", "GET", "PUT", "DELETE", "OPTIONS");
             }
         };
     }

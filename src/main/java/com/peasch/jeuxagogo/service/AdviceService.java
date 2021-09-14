@@ -9,5 +9,5 @@ public interface AdviceService {
     AdviceDto add(AdviceDto adviceDto,int id);
     void delete(int id);
     List<AdviceDto> getAllAdviceById(int id);
-    float getRatingOfGameId(int id);
+    Float getRatingOfGameId(int id);
 }

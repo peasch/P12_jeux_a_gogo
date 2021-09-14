@@ -85,11 +85,9 @@ class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk()).andReturn();
         UserDto jambonjambon = mapper.readValue(result2.getResponse().getContentAsString(), UserDto.class);
         String jambonjambon2 = mapper.writeValueAsString(jambonjambon);
-        MvcResult result3 = mockMvc.perform(put("/user/addRole/2").content(jambonjambon2)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk()).andReturn();
-        UserDto jambonjambon3 = mapper.readValue(result3.getResponse().getContentAsString(), UserDto.class);
-        jambonjambon3.setUsername("jambon");
-        jambonToString= mapper.writeValueAsString(jambonjambon3);
+
+        jambonjambon.setUsername("jambon");
+        jambonToString = mapper.writeValueAsString(jambonjambon);
         mockMvc.perform(post("/user/update").content(jambonToString)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk()).andReturn();
 
@@ -109,17 +107,17 @@ class UserControllerTest {
 
     @Test
     void TEST_USER_MAPPER_IGNORE() throws Exception {
-    UserDto user =UserDto.builder().username("admin").build();
-    String jsonRequest = mapper.writeValueAsString(user);
-      MvcResult result =  mockMvc.perform(get("/user/username/admin").content(jsonRequest)
+        UserDto user = UserDto.builder().username("admin").build();
+        String jsonRequest = mapper.writeValueAsString(user);
+        MvcResult result = mockMvc.perform(get("/user/username/admin").content(jsonRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk()).andReturn();
-      UserDto user2 = mapper.readValue(result.getResponse().getContentAsString(),UserDto.class);
+        UserDto user2 = mapper.readValue(result.getResponse().getContentAsString(), UserDto.class);
         System.out.println(user2.getGodfather());
     }
 
     @Test
     void AUTEHNTICATION_AND_LOGIN_TEST() throws Exception {
-        UserDto user =UserDto.builder().name("bon").firstname("jean").username("jambon")
+        UserDto user = UserDto.builder().name("bon").firstname("jean").username("jambon")
                 .password("test123").email("jean@bon.fr").birthDate((LocalDate.parse("2021-05-19"))).build();
         String jsonRequest = mapper.writeValueAsString(user);
         mockMvc.perform(post("/auth/register")
@@ -132,7 +130,6 @@ class UserControllerTest {
         mockMvc.perform(delete("/user/delete/username/jambon")
                 .content(jsonRequest2).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
     }
-
 
 
 }

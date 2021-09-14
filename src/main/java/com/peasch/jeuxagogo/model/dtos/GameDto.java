@@ -30,4 +30,6 @@ public class GameDto implements Serializable {
     private Set<CopyDto> copiesDto;
     private String coverLink;
     private String description;
+    private Float rating;
+    private Integer borrowingQuantity;
 }

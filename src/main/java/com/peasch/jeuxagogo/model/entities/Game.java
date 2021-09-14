@@ -48,6 +48,10 @@ public class Game implements Serializable {
     private Editor editor;
     @Column(name="description")
     private String description;
+    @Column(name = "rating")
+    private Float rating;
+    @Column(name = "borrowing_quantity")
+    private Integer borrowingQuantity;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_game_style")
     private GameStyle gameStyle;

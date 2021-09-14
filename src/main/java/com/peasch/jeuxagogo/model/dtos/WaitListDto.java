@@ -1,5 +1,6 @@
 package com.peasch.jeuxagogo.model.dtos;
 
+import com.peasch.jeuxagogo.model.entities.Game;
 import com.peasch.jeuxagogo.model.entities.User;
 import lombok.*;
 
@@ -14,9 +15,13 @@ import java.time.LocalDate;
 public class WaitListDto {
     private int id;
     @NotNull
-    private User waiter;
+    private UserDto waiter;
     @NotNull
     private LocalDate returnDate;
     @NotNull @Past
     private LocalDate date;
+
+    private LocalDate contactDate;
+    @NotNull
+    private GameDto game;
 }
