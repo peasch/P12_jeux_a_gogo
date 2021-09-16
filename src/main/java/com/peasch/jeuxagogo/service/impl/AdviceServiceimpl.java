@@ -49,12 +49,22 @@ public class AdviceServiceimpl implements AdviceService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public AdviceDto add(AdviceDto adviceDto, int id) {
-
         adviceDto.setGame(gameService.findById(id));
         adviceDto.setUser(userService.findByUsername(adviceDto.getUsername()));
         this.validationOfAdvice(adviceDto);
         return mapper.fromAdviceToDto(dao.save(mapper.fromDtoToAdvice(adviceDto)));
 
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public AdviceDto update(int id, AdviceDto adviceDto) {
+        var adviceToUpdate = mapper.fromAdviceToDto(dao.findById(id).get());
+        adviceToUpdate.setCommentary(adviceDto.getCommentary());
+        adviceToUpdate.setRating(adviceDto.getRating());
+        adviceToUpdate.setGame(adviceDto.getGame());
+        adviceToUpdate.setUser(adviceDto.getUser());
+        adviceToUpdate.setUsername(adviceDto.getUsername());
+        return mapper.fromAdviceToDto(dao.save(mapper.fromDtoToAdvice(adviceToUpdate)));
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

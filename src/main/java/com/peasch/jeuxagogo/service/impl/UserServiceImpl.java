@@ -147,7 +147,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void deleteUser(int id) throws Exception {
-        User user = dao.findUserById(id);
+        var user = dao.findUserById(id);
         Set<Role> roles = user.getRoles();
         for (Role role : roles) {
             roles.remove(role);

@@ -16,33 +16,47 @@ public class AdviceController {
     private AdviceService service;
 
     @GetMapping("/all")
-    public List<AdviceDto> getAdvices(){
+    public List<AdviceDto> getAdvices() {
         return service.getAdvices();
     }
 
     @GetMapping("/all/{id}")
-    public List<AdviceDto> getAdvicesByGameId(@PathVariable(name = "id")int id){
+    public List<AdviceDto> getAdvicesByGameId(@PathVariable(name = "id") int id) {
         return service.getAllAdviceById(id);
     }
 
+    @GetMapping("advice/{id}")
+    public AdviceDto getAdviceById(@PathVariable(name = "id") int id) {
+        return service.getAdviceById(id);
+    }
 
     @PostMapping("/add/{id}")
-    public ResponseEntity addAdvice(@PathVariable(name = "id")int id,@RequestBody AdviceDto adviceDto){
-        try{
-            return new ResponseEntity(service.add(adviceDto,id), HttpStatus.OK);
-        }catch (Exception e){
+    public ResponseEntity addAdvice(@PathVariable(name = "id") int id, @RequestBody AdviceDto adviceDto) {
+        try {
+            return new ResponseEntity(service.add(adviceDto, id), HttpStatus.OK);
+        } catch (Exception e) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
 
         }
     }
+
     @GetMapping("/rating/{id}")
-    public Float getRAtingOfGameId(@PathVariable(name = "id")int id){
+    public Float getRAtingOfGameId(@PathVariable(name = "id") int id) {
         return service.getRatingOfGameId(id);
 
     }
 
+    @PutMapping("/update/{id}")
+    public ResponseEntity update(@PathVariable(name = "id") int id, @RequestBody AdviceDto adviceDto) {
+        try {
+            return new ResponseEntity(service.update(id, adviceDto), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+    }
+
     @DeleteMapping("/delete/{id}")
-    public void deleteAdvice(@PathVariable(name = "id")int id){
+    public void deleteAdvice(@PathVariable(name = "id") int id) {
         service.delete(id);
     }
 }
