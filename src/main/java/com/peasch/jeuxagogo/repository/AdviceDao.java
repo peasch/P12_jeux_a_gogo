@@ -9,6 +9,9 @@ import java.util.List;
 
 public interface AdviceDao extends JpaRepository<Advice, Integer> {
 
-    Advice findAdviceByGame_IdAndUser_Username(int gameId,String username);
+    Advice findAdviceByGame_IdAndUser_Username(int gameId, String username);
+
     List<Advice> findAllByGame_Id(int id);
+
+    List<Advice> findAllByUser_Username(String username);
 }

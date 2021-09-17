@@ -4,12 +4,15 @@ import com.peasch.jeuxagogo.controller.security.service.CustomUserDetailsService
 import com.peasch.jeuxagogo.mailing.EmailService;
 import com.peasch.jeuxagogo.model.Mappers.RoleMapper;
 import com.peasch.jeuxagogo.model.Mappers.UserMapper;
+import com.peasch.jeuxagogo.model.dtos.AdviceDto;
+import com.peasch.jeuxagogo.model.dtos.BorrowingDto;
 import com.peasch.jeuxagogo.model.dtos.RoleDto;
 import com.peasch.jeuxagogo.model.dtos.UserDto;
 import com.peasch.jeuxagogo.model.entities.Role;
 import com.peasch.jeuxagogo.model.entities.User;
 import com.peasch.jeuxagogo.repository.RoleDao;
 import com.peasch.jeuxagogo.repository.UserDao;
+import com.peasch.jeuxagogo.service.AdviceService;
 import com.peasch.jeuxagogo.service.BorrowingService;
 import com.peasch.jeuxagogo.service.RoleService;
 import com.peasch.jeuxagogo.service.UserService;
@@ -51,6 +54,8 @@ public class UserServiceImpl implements UserService {
     private RoleService roleService;
     @Autowired
     private EmailService emailService;
+    @Autowired
+    private AdviceService adviceService;
     @Autowired
     private PasswordEncoder bCryptPasswordEncoder;
 
@@ -149,6 +154,14 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(int id) throws Exception {
         var user = dao.findUserById(id);
         Set<Role> roles = user.getRoles();
+        List<BorrowingDto> borrowingDtos = borrowingService.getReturnedBorrowingsByUsername(user.getUsername());
+        for (BorrowingDto borrowingDto : borrowingDtos) {
+            borrowingService.delete(borrowingDto.getId());
+        }
+        List<AdviceDto> advices = adviceService.getAllAdviceByUsername(user.getUsername());
+        for (AdviceDto adviceDto : advices) {
+            adviceService.delete(adviceDto.getId());
+        }
         for (Role role : roles) {
             roles.remove(role);
         }

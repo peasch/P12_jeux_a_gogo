@@ -46,6 +46,12 @@ public class AdviceServiceimpl implements AdviceService {
                 .map(mapper::fromAdviceToDto).collect(Collectors.toList());
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+    public List<AdviceDto> getAllAdviceByUsername(String username) {
+        return dao.findAllByUser_Username(username).stream()
+                .map(mapper::fromAdviceToDto).collect(Collectors.toList());
+    }
+
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public AdviceDto add(AdviceDto adviceDto, int id) {

@@ -45,6 +45,7 @@ public class AuthenticationController {
     private static final String BIENVENUE_MESSAGE = "Bienvenue sur Jeuxagogo.fr, vous pouvez dès à présent profiter du site." +
             "Si vous avez une adhésion en cours, vous allez avoir le statut de membre pour pouvoir emprunter des jeux. Sinon, et bien adhérez :)";
     private static final String ADMIN = "peaschaming@gmail.com";
+    private static final String ADMIN_SUBJECT = "enregistrement mail invalid";
     private static final String ADMIN_MESSAGE = "Un utilisateur a tenté de s'enregistrer avec un mail invalide: %s. " +
             "erreur : %s";
 
@@ -52,7 +53,12 @@ public class AuthenticationController {
     public ResponseEntity register(@RequestBody UserDto user) {
 
         if (userService.findByEmail(user.getEmail()) == null) {
-
+            try {
+                emailService.send(user.getEmail(), BIENVENUE_SUBJECT, BIENVENUE_MESSAGE);
+            } catch (Exception e) {
+                emailService.send(ADMIN, ADMIN_SUBJECT, String.format(ADMIN_MESSAGE, user.getEmail(), ExceptionUtils.getStackTrace(e)));
+                return new ResponseEntity("mail invalide", HttpStatus.FORBIDDEN);
+            }
             try {
                 Set<RoleDto> roles = new HashSet<>();
                 roles.add(roleService.findByRole("USER"));

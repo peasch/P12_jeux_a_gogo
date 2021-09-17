@@ -30,6 +30,12 @@ public class AdviceController {
         return service.getAdviceById(id);
     }
 
+    @GetMapping("/username/{username}")
+    public List<AdviceDto> getAdviceById(@PathVariable(name = "username") String username) {
+        return service.getAllAdviceByUsername(username);
+    }
+
+
     @PostMapping("/add/{id}")
     public ResponseEntity addAdvice(@PathVariable(name = "id") int id, @RequestBody AdviceDto adviceDto) {
         try {

@@ -17,5 +17,7 @@ public interface AdviceService {
 
     AdviceDto update(int id, AdviceDto adviceDto);
 
+    List<AdviceDto> getAllAdviceByUsername(String username);
+
     AdviceDto getAdviceById(int id);
 }
