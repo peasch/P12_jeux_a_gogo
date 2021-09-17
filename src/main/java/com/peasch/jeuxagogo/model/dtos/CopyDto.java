@@ -15,7 +15,6 @@ public class CopyDto implements Serializable {
     private int id;
     @NotNull
     private String code;
-
     private Boolean available;
     @NotNull
     private GameDto game;

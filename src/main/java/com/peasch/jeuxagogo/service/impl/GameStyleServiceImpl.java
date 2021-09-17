@@ -46,6 +46,11 @@ public class GameStyleServiceImpl implements GameStyleService {
         return mapper.fromStyletoDtoWithoutGames(dao.save(mapper.fromDtoToStyle(gameStyleDto)));
 
     }
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void delete(int id) {
+        GameStyleDto gameStyleDto = this.findById(id);
+        dao.delete(mapper.fromDtoToStyle(gameStyleDto));
+    }
 
 
     //---------------------------------Findings----------------------------------------

@@ -1,9 +1,12 @@
 package com.peasch.jeuxagogo.model.dtos;
+
 import com.peasch.jeuxagogo.model.entities.Advice;
 import com.peasch.jeuxagogo.model.entities.Friendship;
 import com.peasch.jeuxagogo.model.entities.Role;
 import com.peasch.jeuxagogo.model.entities.User;
 import lombok.*;
+import org.hibernate.validator.constraints.UniqueElements;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
@@ -13,8 +16,10 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
-@NoArgsConstructor @AllArgsConstructor
-@Getter @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @Builder
 public class UserDto implements Serializable {
 
@@ -24,15 +29,19 @@ public class UserDto implements Serializable {
     private String name;
     @NotNull
     private String firstname;
-    @NotNull @Email
+    @NotNull
+    @Email
+
     private String email;
     @NotNull
     private String username;
     @NotNull
     private String password;
-    @Past @NotNull
+    @Past
+    @NotNull
     private LocalDate birthDate;
-
+    private boolean free;
+    private String resetPassword;
     private LocalDate adhesionDate;
     private Set<RoleDto> rolesDto;
     private UserDto godfather;

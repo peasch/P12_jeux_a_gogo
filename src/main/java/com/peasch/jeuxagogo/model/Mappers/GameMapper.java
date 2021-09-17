@@ -12,10 +12,11 @@ import org.mapstruct.ReportingPolicy;
 
 public interface GameMapper {
 
-
+    @Mapping(target = "rating",source = "rating")
     @Mapping(target = "editor", source = "editorDto")
     @Mapping(target = "gameStyle", source = "gameStyleDto")
     @Mapping(target = "copies", source = "copiesDto")
+    @Mapping(target = "coverLink",source = "coverLink")
     Game fromDtoToGame(GameDto gameDto);
 
 
@@ -23,6 +24,15 @@ public interface GameMapper {
     @Mapping(target = "gameStyleDto", source = "gameStyle", qualifiedByName = "withoutGames")
     @Mapping(target = "copiesDto", source = "copies", qualifiedByName = "withoutGames")
     @Mapping(target = "editorDto", source = "editor", qualifiedByName = "withoutGames")
+    @Mapping(target = "coverLink",source = "coverLink")
+    @Mapping(target = "rating",source = "rating")
     GameDto fromGameToStrictDto(Game game);
+
+    @Named("withoutDetails")
+    @Mapping(target = "gameStyleDto", ignore = true)
+    @Mapping(target = "copiesDto", ignore = true)
+    @Mapping(target = "editorDto", ignore = true)
+    @Mapping(target = "rating",source = "rating")
+    GameDto fromGameTotDtoWithoutDetails(Game game);
 
 }

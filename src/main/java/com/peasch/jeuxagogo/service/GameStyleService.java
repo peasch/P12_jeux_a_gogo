@@ -7,4 +7,6 @@ import java.util.List;
 public interface GameStyleService {
     List<GameStyleDto> getGameStyles();
     GameStyleDto findById(int id);
+    GameStyleDto save(GameStyleDto gameStyleDto);
+    void delete(int id);
 }

@@ -46,7 +46,7 @@ public class GameControllerTest {
 
     @Test
     void INCOMPLETE_GAME_ADDING() throws Exception {
-        GameDto game = GameDto.builder().name("bataille navale").available(true).build();
+        GameDto game = GameDto.builder().available(true).build();
         log.info(mapper.writeValueAsString(game));
         String jsonRequest = mapper.writeValueAsString(game);
 
@@ -59,33 +59,35 @@ public class GameControllerTest {
     void ADD_AND_UPDATE_AND_DELETE_GAME() throws Exception {
         GameDto game = GameDto.builder().name("cluedo").ageMin(3).available(true).rulesLink("dfsdgsg")
                 .minPlayers(2).maxPlayers(6).available(true).build();
-        game.setEditorDto( mapper.readValue(mockMvc.perform(get("/editor/1"))
-                .andReturn().getResponse().getContentAsString(),EditorDto.class));
+        game.setEditorDto(mapper.readValue(mockMvc.perform(get("/editor/1"))
+                .andReturn().getResponse().getContentAsString(), EditorDto.class));
 
         MvcResult result = mockMvc.perform(post("/game/add").content(mapper.writeValueAsString(game))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk()).andReturn();
-
+        mockMvc.perform(post("/game/add").content(mapper.writeValueAsString(game))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isForbidden());
         GameDto gameToUpdate = mapper.readValue(result.getResponse().getContentAsString(), GameDto.class);
 
         gameToUpdate.setMinPlayers(3);
-        CopyDto copy =CopyDto.builder().available(true).code("dfsgdfg").game(gameToUpdate).build();
+        CopyDto copy = CopyDto.builder().available(true).code("dfsgdfg").game(gameToUpdate).build();
 
-        mockMvc.perform(post("/copy/add").content(mapper.writeValueAsString(copy))
+        mockMvc.perform(post("/copy/add/" + gameToUpdate.getId()).content(mapper.writeValueAsString(copy))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk());
-
-         mockMvc.perform(put("/game/update").content(mapper.writeValueAsString(gameToUpdate))
+        mockMvc.perform(post("/copy/add/" + gameToUpdate.getId()).content(mapper.writeValueAsString(copy))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isForbidden());
+        mockMvc.perform(put("/game/update").content(mapper.writeValueAsString(gameToUpdate))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk()).andReturn();
 
-        mockMvc.perform(delete("/game/delete/"+gameToUpdate.getId())).andExpect(status().isOk());
+        mockMvc.perform(delete("/game/delete/" + gameToUpdate.getId())).andExpect(status().isOk());
 
     }
 
     @Test
-    void SHOW_FIELDS_OF_GAME() throws Exception{
-        MvcResult result = mockMvc.perform(get("/game/1")).andExpect(status().isOk()).andReturn();
-        GameDto game= mapper.readValue(result.getResponse().getContentAsString(), GameDto.class);
+    void SHOW_FIELDS_OF_GAME() throws Exception {
+        MvcResult result = mockMvc.perform(get("/game/id/1")).andExpect(status().isOk()).andReturn();
+        GameDto game = mapper.readValue(result.getResponse().getContentAsString(), GameDto.class);
         System.out.println(game.getCopiesDto().isEmpty());
-        System.out.println(game.getEditorDto().getName());
+
         System.out.println(game.getGameStyleDto().getName());
     }
 

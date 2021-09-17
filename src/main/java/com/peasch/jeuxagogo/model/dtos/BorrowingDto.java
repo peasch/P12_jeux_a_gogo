@@ -15,10 +15,11 @@ import java.time.LocalDate;
 public class BorrowingDto {
     private int id;
     @NotNull
-    private User borrower;
+    private UserDto borrowerDto;
     @NotNull
-    private Copy copy;
-    @NotNull
+    private CopyDto copyDto;
+
     private LocalDate date;
     private LocalDate returnDate;
+    private Boolean returned;
 }

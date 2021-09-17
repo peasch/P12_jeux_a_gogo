@@ -26,14 +26,29 @@ public class CopyController {
         return service.getCopiesByGameId(id);
     }
 
-    @PostMapping("/add")
-    public ResponseEntity addGame(@RequestBody CopyDto copyDto)
+    @PostMapping("/add/{id}")
+    public ResponseEntity addCopy(@PathVariable(name = "id")int id,@RequestBody CopyDto copyDto)
     {
         try{
-            return new ResponseEntity(service.save(copyDto), HttpStatus.OK);
+            return new ResponseEntity(service.save(copyDto,id), HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity(HttpStatus.FORBIDDEN);
 
         }
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity updateCopy(@RequestBody CopyDto copyDto){
+        try{
+            return new ResponseEntity(service.update(copyDto), HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+
+        }
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public void deleteCopy(@PathVariable(name = "id")int id){
+        service.delete(id);
     }
 }

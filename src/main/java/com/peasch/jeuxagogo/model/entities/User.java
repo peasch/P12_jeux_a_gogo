@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -13,15 +14,17 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 
 @Entity
-@Table(name="user")
-@AllArgsConstructor @NoArgsConstructor
-@Getter @Setter
+@Table(name = "user")
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name="name")
+    @Column(name = "name")
     private String name;
 
     @Column(name = "firstname")
@@ -42,6 +45,11 @@ public class User implements Serializable {
     @Column(name = "adhesion_date")
     private LocalDate adhesionDate;
 
+    @Column(name = "free")
+    private boolean free;
+    @Column(name = "reset_password")
+    private String resetPassword;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_has_role",
@@ -52,7 +60,7 @@ public class User implements Serializable {
                     @JoinColumn(name = "role_id")
             }
     )
-    private Set < Role > roles = new HashSet <> ();
+    private Set<Role> roles = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_godfather")

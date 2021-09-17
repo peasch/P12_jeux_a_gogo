@@ -16,7 +16,7 @@ public class GameDto implements Serializable {
     private int id;
     @NotNull
     private String name;
-    @NotNull
+
     private Integer ageMin;
 
     private int minPlayers;
@@ -26,9 +26,10 @@ public class GameDto implements Serializable {
     private String rulesLink;
     private Boolean french;
     private EditorDto editorDto;
-    private int borrowingQuantity;
     private GameStyleDto gameStyleDto;
-
     private Set<CopyDto> copiesDto;
-
+    private String coverLink;
+    private String description;
+    private Float rating;
+    private Integer borrowingQuantity;
 }

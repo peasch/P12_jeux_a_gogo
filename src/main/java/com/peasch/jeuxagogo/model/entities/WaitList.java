@@ -25,9 +25,11 @@ public class WaitList {
     @JoinColumn(name = "fk_waiter")
     private User waiter;
 
+    @Column(name = "waitList_date")
+    private LocalDate date;
     @Column(name = "return_date")
     private LocalDate returnDate;
 
-    @Column(name = "waitList_date")
-    private LocalDate date;
+    @Column(name = "contact_date")
+    private LocalDate contactDate;
 }

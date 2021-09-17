@@ -14,7 +14,14 @@ import java.util.Set;
 @Table(name="game")
 @AllArgsConstructor @NoArgsConstructor
 @Getter @Setter
+@NamedQueries(
+        @NamedQuery(name = Game.QN.FIND_ALL_ORDERED,
+                    query="SELECT g from Game g order by g.name")
+)
 public class Game implements Serializable {
+    public static class QN{
+        public static final String FIND_ALL_ORDERED ="Game.findAllOrdered";
+    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -32,13 +39,19 @@ public class Game implements Serializable {
     private Integer duration;
     @Column(name = "rules_link")
     private String rulesLink;
+    @Column(name = "cover_link")
+    private String coverLink;
     @Column(name = "French")
     private Boolean French;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="fk_editor")
     private Editor editor;
-    @Column(name="borrowing_quantity")
-    private int borrowingQuantity;
+    @Column(name="description")
+    private String description;
+    @Column(name = "rating")
+    private Float rating;
+    @Column(name = "borrowing_quantity")
+    private Integer borrowingQuantity;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_game_style")
     private GameStyle gameStyle;
@@ -47,5 +60,7 @@ public class Game implements Serializable {
     @OneToMany(mappedBy = "game",fetch = FetchType.LAZY)
     private Set<Copy> copies = new HashSet<>();
 
+    @OneToMany(mappedBy = "game",fetch = FetchType.LAZY)
+    private Set<Advice> advices = new HashSet<>();
 
 }
